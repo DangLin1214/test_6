@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Survival Analysis</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="proposal.html">Proposal</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="introduction.html">Introduction</a>
+</li>
+<li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="eda.html">EDA</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
+<li>
+  <a href="appendix.html">Appendix</a>
+</li>
+<li>
+  <a href="mailto:&lt;dl3757@cumc.columbia.edu&gt;">
+    <span class="fa fa-play-circle fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="mailto:&lt;dl3757@cumc.columbia.edu&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/DangLin1214/test4.github.io.git">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Survival Analysis</h1>
+
+</div>
+
+
+<p><a
+href="https://github.com/DangLin1214/test4.github.io/blob/main/analysis.R">View
+Full Survival Analysis Steps on GitHub</a></p>
+<div id="methodology" class="section level3">
+<h3>Methodology</h3>
+<p>Cox proportional hazards models will be employed to investigate the
+association between exposure categories and survival outcomes. In this
+study, we will conduct survival analysis to evaluate the relationships
+between baseline inflammatory and metabolic exposure categories and the
+risks of developing non-alcoholic fatty liver disease (NAFLD) and
+cirrhosis. Survival analysis is a statistical approach designed to
+analyze time-to-event data, where the survival time <span
+class="math inline">\(T\)</span> (time until the occurrence of the event
+of interest) and the censoring time <span
+class="math inline">\(C\)</span> (time at which an observation is no
+longer tracked) are observed. The observed survival time, denoted
+as:</p>
+<p><span class="math display">\[Y = min(T, C)\]</span></p>
+<p>The censoring indicator <span class="math inline">\(\delta\)</span>
+is defined as: <span class="math display">\[
+\delta =
+\begin{cases}
+1 &amp; \text{if } T \leq C \\
+0 &amp; \text{if } T &gt; C
+\end{cases}
+\]</span> Here, <span class="math inline">\(\delta = 1\)</span>
+indicates the event was observed, and <span class="math inline">\(\delta
+= 0\)</span> signifies that censoring occurred.</p>
+<p>By modeling survival times and event occurrences, we aim to quantify
+the impact of different exposure categories on the hazard of developing
+NAFLD and cirrhosis, adjusting for relevant covariates.</p>
+</div>
+<div id="general-form-of-the-cox-proportional-hazards-model"
+class="section level3">
+<h3>General Form of the Cox Proportional Hazards Model</h3>
+<p>We applied the Cox proportional hazards model to evaluate how various
+covariates influence the hazard rate <span
+class="math inline">\(h(t)\)</span>, which represents the instantaneous
+risk of the event occurring at time <span
+class="math inline">\(t\)</span>. The hazard function is defined as:</p>
+<p><span class="math display">\[h(t) = h_0(t) \exp(x_1\beta_1 +
+x_2\beta_2 + \dots + x_k\beta_k)\]</span></p>
+<p>Where:</p>
+<p><span class="math inline">\(h(t)\)</span>: Hazard function for time
+t,</p>
+<p><span class="math inline">\(h_0(t)\)</span>: Baseline hazard
+function,</p>
+<p><span class="math inline">\(x_i\)</span>: Covariates (e.g., age, sex,
+inflammatory markers, socioeconomic factors),</p>
+<p><span class="math inline">\(\beta_i\)</span>: Regression coefficients
+for covariates.</p>
+</div>
+<div id="baseline-characteristics-table" class="section level3">
+<h3>Baseline Characteristics Table</h3>
+<p>The baseline characteristics are stratified by each exposure category
+to identify differences in fundamental features across exposure groups
+and to provide a reference for constructing the Cox proportional hazards
+model (see <a href="appendix.html">Appendix</a> for more detailed tables
+and explanations).</p>
+<pre class="r"><code>Baseline_expo_lmr_cat_results &lt;- read_csv(&quot;./csv/Baseline_expo_lmr_cat.csv&quot;)
+
+Baseline_expo_lmr_cat_cleaned &lt;- Baseline_expo_lmr_cat_results %&gt;%
+  select(-test) %&gt;% 
+  rename(
+    ` ` = ...1, 
+    Level1 = `1`, 
+    Level2 = `2`,
+    Level3 = `3`
+  )
+
+
+knitr::kable(
+  Baseline_expo_lmr_cat_cleaned,
+  digits = 2,
+  caption = &quot;Baseline Characteristics by LMR Exposure Categories&quot;,
+  align = &quot;c&quot;
+) %&gt;%
+  kable_styling(full_width = FALSE, position = &quot;center&quot;)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Baseline Characteristics by LMR Exposure Categories
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+</th>
+<th style="text-align:center;">
+Overall
+</th>
+<th style="text-align:center;">
+Level1
+</th>
+<th style="text-align:center;">
+Level2
+</th>
+<th style="text-align:center;">
+Level3
+</th>
+<th style="text-align:center;">
+p
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+n
+</td>
+<td style="text-align:center;">
+413146
+</td>
+<td style="text-align:center;">
+105227
+</td>
+<td style="text-align:center;">
+204634
+</td>
+<td style="text-align:center;">
+103279
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+sex = 2 (%)
+</td>
+<td style="text-align:center;">
+190849 (46.2)
+</td>
+<td style="text-align:center;">
+69149 (65.7)
+</td>
+<td style="text-align:center;">
+93068 (45.5)
+</td>
+<td style="text-align:center;">
+28629 (27.7)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+age (mean (SD))
+</td>
+<td style="text-align:center;">
+56.54 (8.09)
+</td>
+<td style="text-align:center;">
+57.70 (8.07)
+</td>
+<td style="text-align:center;">
+56.32 (8.10)
+</td>
+<td style="text-align:center;">
+55.79 (7.96)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+income (%)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+40844 (9.9)
+</td>
+<td style="text-align:center;">
+9912 (9.4)
+</td>
+<td style="text-align:center;">
+20134 (9.9)
+</td>
+<td style="text-align:center;">
+10798 (10.5)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+17370 (4.2)
+</td>
+<td style="text-align:center;">
+3874 (3.7)
+</td>
+<td style="text-align:center;">
+8290 (4.1)
+</td>
+<td style="text-align:center;">
+5206 (5.1)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+79972 (19.4)
+</td>
+<td style="text-align:center;">
+21680 (20.7)
+</td>
+<td style="text-align:center;">
+37894 (18.6)
+</td>
+<td style="text-align:center;">
+20398 (19.8)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+89874 (21.8)
+</td>
+<td style="text-align:center;">
+23863 (22.8)
+</td>
+<td style="text-align:center;">
+44107 (21.6)
+</td>
+<td style="text-align:center;">
+21902 (21.3)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+92455 (22.4)
+</td>
+<td style="text-align:center;">
+23555 (22.5)
+</td>
+<td style="text-align:center;">
+46634 (22.8)
+</td>
+<td style="text-align:center;">
+22263 (21.6)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+72283 (17.5)
+</td>
+<td style="text-align:center;">
+17494 (16.7)
+</td>
+<td style="text-align:center;">
+37205 (18.2)
+</td>
+<td style="text-align:center;">
+17583 (17.1)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+7
+</td>
+<td style="text-align:center;">
+19249 (4.7)
+</td>
+<td style="text-align:center;">
+4513 (4.3)
+</td>
+<td style="text-align:center;">
+9872 (4.8)
+</td>
+<td style="text-align:center;">
+4864 (4.7)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+townsend (mean (SD))
+</td>
+<td style="text-align:center;">
+-1.33 (3.08)
+</td>
+<td style="text-align:center;">
+-1.39 (3.04)
+</td>
+<td style="text-align:center;">
+-1.39 (3.04)
+</td>
+<td style="text-align:center;">
+-1.14 (3.18)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+total_met (mean (SD))
+</td>
+<td style="text-align:center;">
+1619.08 (2015.70)
+</td>
+<td style="text-align:center;">
+1645.29 (2084.82)
+</td>
+<td style="text-align:center;">
+1625.33 (2008.34)
+</td>
+<td style="text-align:center;">
+1578.85 (1955.34)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+diet_quality (mean (SD))
+</td>
+<td style="text-align:center;">
+3.29 (1.57)
+</td>
+<td style="text-align:center;">
+3.12 (1.57)
+</td>
+<td style="text-align:center;">
+3.31 (1.57)
+</td>
+<td style="text-align:center;">
+3.42 (1.56)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+sleep_hour (mean (SD))
+</td>
+<td style="text-align:center;">
+7.15 (1.10)
+</td>
+<td style="text-align:center;">
+7.17 (1.12)
+</td>
+<td style="text-align:center;">
+7.15 (1.09)
+</td>
+<td style="text-align:center;">
+7.14 (1.13)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+smoke_cat (%)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+32255 (7.8)
+</td>
+<td style="text-align:center;">
+6743 (6.4)
+</td>
+<td style="text-align:center;">
+15030 (7.3)
+</td>
+<td style="text-align:center;">
+10481 (10.1)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+11334 (2.7)
+</td>
+<td style="text-align:center;">
+2843 (2.7)
+</td>
+<td style="text-align:center;">
+5572 (2.7)
+</td>
+<td style="text-align:center;">
+2919 (2.8)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+96062 (23.3)
+</td>
+<td style="text-align:center;">
+27859 (26.5)
+</td>
+<td style="text-align:center;">
+47078 (23.0)
+</td>
+<td style="text-align:center;">
+21122 (20.5)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+47431 (11.5)
+</td>
+<td style="text-align:center;">
+12141 (11.5)
+</td>
+<td style="text-align:center;">
+23827 (11.6)
+</td>
+<td style="text-align:center;">
+11463 (11.1)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+60211 (14.6)
+</td>
+<td style="text-align:center;">
+15267 (14.5)
+</td>
+<td style="text-align:center;">
+30436 (14.9)
+</td>
+<td style="text-align:center;">
+14507 (14.0)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+165853 (40.1)
+</td>
+<td style="text-align:center;">
+40374 (38.4)
+</td>
+<td style="text-align:center;">
+82691 (40.4)
+</td>
+<td style="text-align:center;">
+42787 (41.4)
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+total_alcohol (mean (SD))
+</td>
+<td style="text-align:center;">
+12.55 (15.17)
+</td>
+<td style="text-align:center;">
+15.16 (17.37)
+</td>
+<td style="text-align:center;">
+12.50 (14.77)
+</td>
+<td style="text-align:center;">
+9.98 (12.92)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+non_hdl (mean (SD))
+</td>
+<td style="text-align:center;">
+359.49 (78.74)
+</td>
+<td style="text-align:center;">
+345.15 (77.61)
+</td>
+<td style="text-align:center;">
+361.10 (77.88)
+</td>
+<td style="text-align:center;">
+371.09 (79.37)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+tg (mean (SD))
+</td>
+<td style="text-align:center;">
+92.17 (22.17)
+</td>
+<td style="text-align:center;">
+92.24 (22.59)
+</td>
+<td style="text-align:center;">
+91.90 (21.60)
+</td>
+<td style="text-align:center;">
+92.66 (22.85)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+bp_cat (mean (SD))
+</td>
+<td style="text-align:center;">
+49.88 (28.78)
+</td>
+<td style="text-align:center;">
+47.57 (28.26)
+</td>
+<td style="text-align:center;">
+50.05 (28.71)
+</td>
+<td style="text-align:center;">
+51.91 (29.25)
+</td>
+<td style="text-align:center;">
+&lt;0.001
+</td>
+</tr>
+</tbody>
+</table>
+<p>This table provides the baseline characteristics of participants
+categorized by Lymphocyte-to-Monocyte Ratio (LMR) levels (Level 1, Level
+2, Level 3). It includes demographic (e.g., age, sex), socioeconomic
+(e.g., income, Townsend index), lifestyle (e.g., smoking, alcohol
+intake), and clinical markers (e.g., triglycerides, diet quality),
+highlighting significant differences across categories with p-values for
+most variables. These differences emphasize potential confounding
+variables that need adjustment in subsequent statistical models, such as
+Cox proportional hazards analysis.</p>
+<p><br></p>
+</div>
+<div id="cox-proportional-hazards-models" class="section level3">
+<h3>Cox Proportional Hazards Models</h3>
+<div id="model-1" class="section level4">
+<h4>Model 1</h4>
+<p><span class="math display">\[
+h(t) = h_0(t) \exp\left( \beta_{\text{expo}} \times x_{expo} +
+\beta_{\text{age}} \times x_{age} + \beta_{\text{sex}} \times x_{sex}
+\right)
+\]</span></p>
+</div>
+<div id="model-2" class="section level4">
+<h4>Model 2</h4>
+<p><span class="math display">\[
+\begin{aligned}
+h(t) = h_0(t) \exp\Big( &amp; \beta_{\text{expo}} \times x_{expo} +
+\beta_{\text{age}} \times x_{age} + \beta_{\text{sex}} \times x_{sex} +
+\beta_{\text{income}} \times x_{income} \\
+&amp; + \beta_{\text{townsend}} \times x_{townsend} +
+\beta_{\text{total_met}} \times x_{\text{total_met}} +
+\beta_{\text{diet_quality}} \times x_{\text{diet_quality}} \\
+&amp; + \beta_{\text{sleep_hour}} \times x_{\text{sleep_hour}} +
+\beta_{\text{smoke_cat}} \times x_{\text{smoke_cat}} +
+\beta_{\text{total_alcohol}} \times x_{\text{total_alcohol}} \\
+&amp; + \beta_{\text{no_hdl}} \times x_{\text{no_hdl}} +
+\beta_{\text{tg}} \times x_{\text{tg}} + \beta_{\text{bp_cat}} \times
+x_{\text{bp_cat}} \Big)
+\end{aligned}
+\]</span></p>
+<p>After fitting the Cox proportional hazards models, hazard ratios
+(HRs) will be calculated for each exposure category, with the lowest
+exposure category serving as the reference. Statistical significance
+will be assessed using p-values, and dose-response relationships will be
+evaluated through p-for-trend tests. Results will be reported with 95%
+confidence intervals (CIs) to convey precision. Survival durations will
+be computed based on either censored times or event times, with
+imputation applied where necessary to ensure complete datasets for
+analysis.</p>
+<p><br></p>
+</div>
+</div>
+<div id="cumulative-hazard-plots" class="section level2">
+<h2>Cumulative Hazard Plots</h2>
+<div
+id="cumulative-hazard-plot-for-expo_lmr-categories-in-nafld-outcome"
+class="section level4">
+<h4>Cumulative Hazard Plot for expo_lmr Categories in NAFLD Outcome</h4>
+<p><img src="png/cumhaz_expo_lmr_cat_nafld.png" style="width:180%;"></p>
+<p>The cumulative hazard plot shows the association between
+lymphocyte-to-monocyte ratio (LMR) exposure categories and the risk of
+developing non-alcoholic fatty liver disease (NAFLD) over time. The
+three exposure categories (level 1, level 2, and level 3) display
+distinct cumulative hazard trends, with the high exposure group (level
+3, yellow line) showing the steepest increase, indicating the highest
+risk of NAFLD. The low exposure group (level 1, green line) has the
+slowest cumulative hazard growth, suggesting the lowest risk, while the
+intermediate group (level 2, blue line) lies between the two. The
+separation of curves is statistically significant (p &lt; 0.0001),
+demonstrating a strong dose-response relationship, where higher LMR
+exposure corresponds to greater NAFLD risk. These findings highlight the
+role of inflammation, as reflected by LMR, in driving the development of
+NAFLD.</p>
+<p><br></p>
+</div>
+<div
+id="cumulative-hazard-plot-for-expo_lmr-categories-in-cirrhosis-outcome"
+class="section level4">
+<h4>Cumulative Hazard Plot for expo_lmr Categories in Cirrhosis
+Outcome</h4>
+<p><img src="png/cumhaz_expo_lmr_cat_cirrho.png" style="width:180%;"></p>
+<p>The cumulative hazard plot depicts the relationship between
+lymphocyte-to-monocyte ratio (LMR) exposure categories and the risk of
+developing cirrhosis over time. The three exposure categories (level 1,
+level 2, and level 3) show minimal separation in cumulative hazard
+curves throughout most of the follow-up period, with a slight divergence
+occurring after approximately 5,000 days. The high exposure group (level
+3, yellow line) exhibits a marginally higher cumulative hazard compared
+to the intermediate (level 2, blue line) and low exposure groups (level
+1, green line). However, the overall difference among the exposure
+groups is not statistically significant (p = 0.059), suggesting limited
+evidence to support an association between LMR exposure categories and
+cirrhosis risk within the observed follow-up period.</p>
+<p><br></p>
+</div>
+<div id="cumulative-hazard-plot-for-sii-exposure-in-nafld-outcome"
+class="section level4">
+<h4>Cumulative Hazard Plot for SII Exposure in NAFLD Outcome</h4>
+<p><img src="png/cumhaz_expo_sii_cat_nafld.png" style="width:180%;"></p>
+<p>The cumulative hazard plot illustrates the relationship between
+systemic immune-inflammation index (SII) exposure categories and the
+risk of developing non-alcoholic fatty liver disease (NAFLD) over time.
+The three exposure categories (level 1, level 2, and level 3) display
+distinct trends, with the high exposure group (level 3, yellow line)
+showing the steepest cumulative hazard increase, indicating the highest
+risk of NAFLD. The low exposure group (level 1, green line) exhibits the
+slowest cumulative hazard growth, reflecting the lowest risk, while the
+intermediate group (level 2, blue line) lies between the two. The
+differences in cumulative hazard among the groups are statistically
+significant (p &lt; 0.0001), highlighting a clear dose-response
+relationship. These findings underscore the importance of systemic
+inflammation, as captured by SII, as a significant risk factor for NAFLD
+development.</p>
+<p><br></p>
+</div>
+<div id="cumulative-hazard-plot-for-sii-exposure-in-cirrhosis-outcome"
+class="section level4">
+<h4>Cumulative Hazard Plot for SII Exposure in Cirrhosis Outcome</h4>
+<p><img src="png/cumhaz_expo_sii_cat_cirrho.png" style="width:180%;"></p>
+<p>The cumulative hazard plot shows the relationship between systemic
+immune-inflammation index (SII) exposure categories and the risk of
+developing cirrhosis over time. The three exposure categories (level 1,
+level 2, and level 3) exhibit increasing cumulative hazard trends, with
+the high exposure group (level 3, yellow line) showing the steepest
+increase in cumulative hazard, indicating the highest risk of cirrhosis.
+The low exposure group (level 1, green line) has the slowest cumulative
+hazard growth, suggesting the lowest risk, while the intermediate group
+(level 2, blue line) falls between the two. The differences among the
+exposure groups are statistically significant (p &lt; 0.0001),
+demonstrating a strong association between higher SII levels and
+increased risk of cirrhosis. These findings highlight systemic
+inflammation, as measured by SII, as an important risk factor for
+cirrhosis.</p>
+<p><br></p>
+</div>
+<div id="cumulative-hazard-plot-for-sii-exposure-in-nafld-outcome-1"
+class="section level4">
+<h4>Cumulative Hazard Plot for SII Exposure in NAFLD Outcome</h4>
+<p><img src="png/cumhaz_expo_npar_cat_nafld.png" style="width:180%;"></p>
+<p>The cumulative hazard plot illustrates the association between
+systemic immune-inflammation index (SII) exposure categories and the
+risk of developing non-alcoholic fatty liver disease (NAFLD) over time.
+The three exposure categories (level 1, level 2, and level 3) show clear
+separation in cumulative hazard trends, with the high exposure group
+(level 3, yellow line) exhibiting the steepest increase in cumulative
+hazard, indicating the highest risk of NAFLD. The low exposure group
+(level 1, green line) demonstrates the slowest cumulative hazard growth,
+reflecting the lowest risk, while the intermediate group (level 2, blue
+line) lies between the two. The differences among the exposure groups
+are statistically significant (p &lt; 0.0001), highlighting a strong
+relationship between higher SII levels and increased risk of NAFLD.
+These findings emphasize the critical role of systemic inflammation, as
+measured by SII, in influencing NAFLD development.</p>
+<p><br></p>
+</div>
+<div id="cumulative-hazard-plot-for-npar-exposure-in-cirrhosis-outcome"
+class="section level4">
+<h4>Cumulative Hazard Plot for NPAR Exposure in Cirrhosis Outcome</h4>
+<p><img src="png/cumhaz_expo_npar_cat_cirrho.png" style="width:180%;"></p>
+<p>The cumulative hazard plot shows the relationship between
+neutrophil-to-albumin ratio (NPAR) exposure categories and the risk of
+developing cirrhosis over time. The three exposure categories (level 1,
+level 2, and level 3) demonstrate increasing cumulative hazard trends,
+with the high exposure group (level 3, yellow line) exhibiting the
+steepest cumulative hazard increase, indicating the highest risk of
+cirrhosis. The low exposure group (level 1, green line) shows the
+slowest cumulative hazard growth, reflecting the lowest risk, while the
+intermediate group (level 2, blue line) lies between the two. The
+differences among the groups are statistically significant (p &lt;
+0.0001), suggesting a strong association between higher NPAR levels and
+an increased risk of cirrhosis. These findings highlight the potential
+role of elevated NPAR as a marker for cirrhosis risk.</p>
+<p><br></p>
+</div>
+<div id="results-for-nafld-outcome" class="section level3">
+<h3>Results for NAFLD Outcome</h3>
+<pre class="r"><code>nafld_results &lt;- read_csv(&quot;./csv/Main_cox_nafld.csv&quot;)
+
+nafld_results_cleaned &lt;- nafld_results %&gt;%
+  select(-1, -lower_conf, -upper_conf) %&gt;%
+  rename(
+    Model = Model,
+    `Exposure Category` = Category,
+    `Hazard Ratio (HR)` = HR,
+    `P-value` = P,
+    `P for Trend` = `P for trend`, 
+    `Confidence Interval` = CI
+  )
+
+nafld_results_cleaned %&gt;%
+  knitr::kable(
+    digits = 4,
+    caption = &quot;Cox Proportional Hazards Results for NAFLD Outcome&quot;,
+    align = &quot;c&quot; 
+  ) %&gt;%
+  kable_styling(full_width = FALSE, position = &quot;center&quot;)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Cox Proportional Hazards Results for NAFLD Outcome
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Model
+</th>
+<th style="text-align:center;">
+Exposure Category
+</th>
+<th style="text-align:center;">
+Hazard Ratio (HR)
+</th>
+<th style="text-align:center;">
+Confidence Interval
+</th>
+<th style="text-align:center;">
+P-value
+</th>
+<th style="text-align:center;">
+P for Trend
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_lmr_cat2
+</td>
+<td style="text-align:center;">
+1.068
+</td>
+<td style="text-align:center;">
+1.022, 1.115
+</td>
+<td style="text-align:center;">
+0.0033
+</td>
+<td style="text-align:center;">
+0.0033
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_lmr_cat3
+</td>
+<td style="text-align:center;">
+1.105
+</td>
+<td style="text-align:center;">
+1.049, 1.164
+</td>
+<td style="text-align:center;">
+0.0002
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_lmr_cat2
+</td>
+<td style="text-align:center;">
+1.133
+</td>
+<td style="text-align:center;">
+1.059, 1.213
+</td>
+<td style="text-align:center;">
+0.0003
+</td>
+<td style="text-align:center;">
+0.0003
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_lmr_cat3
+</td>
+<td style="text-align:center;">
+1.122
+</td>
+<td style="text-align:center;">
+1.033, 1.22
+</td>
+<td style="text-align:center;">
+0.0065
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_sii_cat2
+</td>
+<td style="text-align:center;">
+0.824
+</td>
+<td style="text-align:center;">
+0.789, 0.861
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_sii_cat3
+</td>
+<td style="text-align:center;">
+0.744
+</td>
+<td style="text-align:center;">
+0.708, 0.782
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_sii_cat2
+</td>
+<td style="text-align:center;">
+0.851
+</td>
+<td style="text-align:center;">
+0.795, 0.91
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_sii_cat3
+</td>
+<td style="text-align:center;">
+0.712
+</td>
+<td style="text-align:center;">
+0.658, 0.769
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_npar_cat2
+</td>
+<td style="text-align:center;">
+0.873
+</td>
+<td style="text-align:center;">
+0.835, 0.913
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_npar_cat3
+</td>
+<td style="text-align:center;">
+0.810
+</td>
+<td style="text-align:center;">
+0.77, 0.851
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_npar_cat2
+</td>
+<td style="text-align:center;">
+0.864
+</td>
+<td style="text-align:center;">
+0.806, 0.926
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_npar_cat3
+</td>
+<td style="text-align:center;">
+0.766
+</td>
+<td style="text-align:center;">
+0.708, 0.829
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_nps_cat2
+</td>
+<td style="text-align:center;">
+0.840
+</td>
+<td style="text-align:center;">
+0.795, 0.889
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+age
+</td>
+<td style="text-align:center;">
+0.963
+</td>
+<td style="text-align:center;">
+0.961, 0.965
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_nps_cat2
+</td>
+<td style="text-align:center;">
+0.819
+</td>
+<td style="text-align:center;">
+0.751, 0.893
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+age
+</td>
+<td style="text-align:center;">
+0.962
+</td>
+<td style="text-align:center;">
+0.958, 0.966
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
+<p>This table presents the results of Cox proportional hazards models
+evaluating the association between various baseline exposure categories
+and the risk of developing non-alcoholic fatty liver disease (NAFLD).
+Each exposure variable (<code>expo_lmr</code>, <code>expo_sii</code>,
+<code>expo_npar</code>, <code>expo_nps</code>) is divided into three
+categories, with Category 1 (not shown) serving as the reference group
+(HR = 1.00). The hazard ratios (HRs), confidence intervals (CIs),
+p-values, and p for trend values are provided for two models: Model 1,
+adjusted for age and sex, and Model 2, adjusted for additional
+covariates including socioeconomic and lifestyle factors.</p>
+<p>For <code>expo_lmr</code>, higher exposure categories (cat2 and cat3)
+consistently show increased HRs across both models, with slightly higher
+HRs in Model 2, indicating a stronger association with NAFLD risk after
+full adjustment. In contrast, for <code>expo_sii</code>,
+<code>expo_npar</code>, and <code>expo_nps</code>, higher categories
+exhibit HRs less than 1 in both models, reflecting their protective
+effects against NAFLD. Notably, the protective effect strengthens
+slightly in Model 2 for <code>expo_sii</code> and
+<code>expo_npar</code>, suggesting that adjusting for additional factors
+further clarifies their relationship with NAFLD risk. Significant p for
+trend values across most exposures reinforce robust dose-response
+relationships, highlighting the importance of these markers in
+predicting NAFLD.</p>
+<p><br></p>
+</div>
+<div id="results-for-cirrhosis-outcome" class="section level3">
+<h3>Results for Cirrhosis Outcome</h3>
+<pre class="r"><code>cirrhosis_results &lt;- read_csv(&quot;./csv/Main_cox_cirrhosis.csv&quot;)
+
+cirrhosis_results_cleaned &lt;- cirrhosis_results %&gt;%
+  select(-1, -lower_conf, -upper_conf) %&gt;%
+  rename(
+    Model = Model,
+    `Exposure Category` = Category,
+    `Hazard Ratio (HR)` = HR,
+    `P-value` = P,
+    `P for Trend` = `P for trend`, 
+    `Confidence Interval` = CI
+  )
+
+cirrhosis_results_cleaned %&gt;%
+  knitr::kable(
+    digits = 4,
+    caption = &quot;Cox Proportional Hazards Results for Cirrhosis Outcome&quot;,
+    align = &quot;c&quot; 
+  ) %&gt;%
+  kable_styling(full_width = FALSE, position = &quot;center&quot;)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Cox Proportional Hazards Results for Cirrhosis Outcome
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Model
+</th>
+<th style="text-align:center;">
+Exposure Category
+</th>
+<th style="text-align:center;">
+Hazard Ratio (HR)
+</th>
+<th style="text-align:center;">
+Confidence Interval
+</th>
+<th style="text-align:center;">
+P-value
+</th>
+<th style="text-align:center;">
+P for Trend
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_lmr_cat2
+</td>
+<td style="text-align:center;">
+0.884
+</td>
+<td style="text-align:center;">
+0.796, 0.981
+</td>
+<td style="text-align:center;">
+0.0209
+</td>
+<td style="text-align:center;">
+0.0209
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_lmr_cat3
+</td>
+<td style="text-align:center;">
+0.859
+</td>
+<td style="text-align:center;">
+0.751, 0.982
+</td>
+<td style="text-align:center;">
+0.0261
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_lmr_cat2
+</td>
+<td style="text-align:center;">
+0.964
+</td>
+<td style="text-align:center;">
+0.815, 1.14
+</td>
+<td style="text-align:center;">
+0.6682
+</td>
+<td style="text-align:center;">
+0.6682
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_lmr_cat3
+</td>
+<td style="text-align:center;">
+0.829
+</td>
+<td style="text-align:center;">
+0.665, 1.033
+</td>
+<td style="text-align:center;">
+0.0955
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_sii_cat2
+</td>
+<td style="text-align:center;">
+0.518
+</td>
+<td style="text-align:center;">
+0.466, 0.574
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_sii_cat3
+</td>
+<td style="text-align:center;">
+0.451
+</td>
+<td style="text-align:center;">
+0.399, 0.509
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_sii_cat2
+</td>
+<td style="text-align:center;">
+0.527
+</td>
+<td style="text-align:center;">
+0.447, 0.622
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_sii_cat3
+</td>
+<td style="text-align:center;">
+0.387
+</td>
+<td style="text-align:center;">
+0.316, 0.474
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_npar_cat2
+</td>
+<td style="text-align:center;">
+0.791
+</td>
+<td style="text-align:center;">
+0.705, 0.887
+</td>
+<td style="text-align:center;">
+0.0001
+</td>
+<td style="text-align:center;">
+0.0001
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_npar_cat3
+</td>
+<td style="text-align:center;">
+0.795
+</td>
+<td style="text-align:center;">
+0.702, 0.9
+</td>
+<td style="text-align:center;">
+0.0003
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_npar_cat2
+</td>
+<td style="text-align:center;">
+0.746
+</td>
+<td style="text-align:center;">
+0.619, 0.899
+</td>
+<td style="text-align:center;">
+0.0020
+</td>
+<td style="text-align:center;">
+0.0020
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_npar_cat3
+</td>
+<td style="text-align:center;">
+0.747
+</td>
+<td style="text-align:center;">
+0.611, 0.915
+</td>
+<td style="text-align:center;">
+0.0048
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+expo_nps_cat2
+</td>
+<td style="text-align:center;">
+0.778
+</td>
+<td style="text-align:center;">
+0.676, 0.895
+</td>
+<td style="text-align:center;">
+0.0004
+</td>
+<td style="text-align:center;">
+0.0004
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 1
+</td>
+<td style="text-align:center;">
+age
+</td>
+<td style="text-align:center;">
+0.962
+</td>
+<td style="text-align:center;">
+0.957, 0.968
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+expo_nps_cat2
+</td>
+<td style="text-align:center;">
+0.722
+</td>
+<td style="text-align:center;">
+0.575, 0.906
+</td>
+<td style="text-align:center;">
+0.0049
+</td>
+<td style="text-align:center;">
+0.0049
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Model 2
+</td>
+<td style="text-align:center;">
+age
+</td>
+<td style="text-align:center;">
+0.969
+</td>
+<td style="text-align:center;">
+0.958, 0.979
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
+<p>Similarly, this table presents the results of Cox proportional
+hazards models evaluating the association between various baseline
+exposure categories and the risk of developing cirrhosis. For
+<code>expo_lmr</code>, higher categories (cat2 and cat3) show HRs
+slightly below 1 in Model 1, indicating a modest protective effect
+against cirrhosis, but this effect weakens in Model 2, with HRs
+approaching 1 and becoming non-significant in some comparisons. In
+contrast, <code>expo_sii</code> demonstrates a strong protective
+association in both models, with substantially reduced HRs for cat2 and
+cat3, and slightly stronger effects observed in Model 2 after full
+adjustment. Similarly, <code>expo_npar</code> and <code>expo_nps</code>
+consistently show HRs below 1 in both models, with Model 2 indicating
+slightly enhanced protective effects compared to Model 1. The
+significant p for trend values, particularly for <code>expo_sii</code>
+and <code>expo_nps</code>, highlight robust dose-response relationships,
+emphasizing the importance of these markers in mitigating cirrhosis
+risk.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

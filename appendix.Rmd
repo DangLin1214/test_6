@@ -1,0 +1,104 @@
+---
+title: "Appendix"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r include = FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+### Baseline Characteristics by LMR Exposure Categories
+```{r message = FALSE, warning = FALSE}
+Baseline_expo_lmr_cat_results <- read_csv("./csv/Baseline_expo_lmr_cat.csv")
+
+Baseline_expo_lmr_cat_cleaned <- Baseline_expo_lmr_cat_results %>%
+  select(-test) %>% 
+  rename(
+    ` ` = ...1, 
+    Level1 = `1`, 
+    Level2 = `2`,
+    Level3 = `3`
+  )
+
+knitr::kable(
+  Baseline_expo_lmr_cat_cleaned,
+  digits = 2,
+  caption = "Baseline Characteristics by LMR Exposure Categories",
+  align = "c"
+) %>%
+  kable_styling(full_width = FALSE, position = "center")
+```
+
+### Baseline Characteristics by SII Exposure Categories
+```{r message = FALSE, warning = FALSE}
+Baseline_expo_sii_cat_results <- read_csv("./csv/Baseline_expo_sii_cat.csv")
+
+Baseline_expo_sii_cat_cleaned <- Baseline_expo_sii_cat_results %>%
+  select(-test) %>% 
+  rename(
+    ` ` = ...1, 
+    Level1 = `1`, 
+    Level2 = `2`,
+    Level3 = `3`
+  )
+
+knitr::kable(
+  Baseline_expo_sii_cat_cleaned,
+  digits = 2,
+  caption = "Baseline Characteristics by SII Exposure Categories",
+  align = "c"
+) %>%
+  kable_styling(full_width = FALSE, position = "center")
+```
+
+### Baseline Characteristics by NPAR Exposure Categories
+```{r message = FALSE, warning = FALSE}
+Baseline_expo_npar_cat_results <- read_csv("./csv/Baseline_expo_npar_cat.csv")
+
+Baseline_expo_npar_cat_cleaned <- Baseline_expo_npar_cat_results %>%
+  select(-test) %>%
+  rename(
+    ` ` = ...1,
+    Level1 = `1`,
+    Level2 = `2`,
+    Level3 = `3`
+  )
+
+knitr::kable(
+  Baseline_expo_npar_cat_cleaned,
+  digits = 2,
+  caption = "Baseline Characteristics by NPAR Exposure Categories",
+  align = "c"
+) %>%
+  kable_styling(full_width = FALSE, position = "center")
+
+```
+
+### Baseline Characteristics by NPS Exposure Categories
+```{r message = FALSE, warning = FALSE}
+Baseline_expo_nps_cat_results <- read_csv("./csv/Baseline_expo_nps_cat.csv")
+
+Baseline_expo_nps_cat_cleaned <- Baseline_expo_nps_cat_results %>%
+  select(-test) %>%
+  rename(
+    ` ` = ...1,
+    Level1 = `1`,
+    Level2 = `2`
+  )
+
+knitr::kable(
+  Baseline_expo_nps_cat_cleaned,
+  digits = 2,
+  caption = "Baseline Characteristics by NPS Exposure Categories",
+  align = "c"
+) %>%
+  kable_styling(full_width = FALSE, position = "center")
+
+```
+
+The baseline characteristics tables present a comprehensive summary of the study population stratified by four key exposure categories: Lymphocyte-to-Monocyte Ratio (LMR), Systemic Immune-Inflammation Index (SII), Neutrophil-to-Albumin Ratio (NPAR), and Naples Prognostic Score (NPS). These tables outline demographic variables (e.g., age, sex), socioeconomic factors (e.g., income, Townsend index), lifestyle behaviors (e.g., smoking, alcohol intake), and clinical markers (e.g., triglycerides, diet quality), while highlighting statistically significant differences across exposure levels for most variables. These differences underscore the potential influence of these covariates on the outcomes, necessitating their adjustment in subsequent analyses, such as Cox proportional hazards modeling, to mitigate confounding and ensure robust evaluation of exposure-outcome relationships.

@@ -1,0 +1,34 @@
+---
+title: "Inflammatory Indices"
+output_dir: "."
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "Proposal"
+      href: proposal.html
+    - text: "Report"
+      href: report.html
+    - text: "Introduction"
+      href: introduction.html
+    - text: "Data"
+      href: data.html
+    - text: "EDA"
+      href: eda.html
+    - text: "Analysis"
+      href: analysis.html
+    - text: "Discussion"
+      href: discussion.html
+    - text: "Appendix"
+      href: appendix.html
+    - icon: fa-play-circle fa-lg
+      href: mailto:<dl3757@cumc.columbia.edu>
+    - icon: fa-envelope fa-lg
+      href: mailto:<dl3757@cumc.columbia.edu>
+    - icon: fa-github fa-lg
+      href: https://github.com/DangLin1214/test4.github.io.git
+    
+output:
+  html_document: 
+    theme: flatly
+---
