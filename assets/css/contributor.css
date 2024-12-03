@@ -1,0 +1,41 @@
+#team-members {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 40px 20px;
+    border-radius: 10px; 
+}
+
+.team-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.member {
+    text-align: center;
+    color: white;
+}
+
+.image.round img {
+    width: 100px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ffffff; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+}
+
+#team-members h2 {
+    color: white; 
+}
+
+.member h3 {
+    font-weight: bold;
+    color: white;
+}
+
+.member p {
+    color: white;
+    font-size: 0.9em;
+}
+

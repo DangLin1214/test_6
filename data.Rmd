@@ -1,0 +1,103 @@
+---
+title: "Data Summary"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+### UKB Dataset
+The dataset used in this project is the UKB dataset. The UK Biobank provides a comprehensive dataset from 500,000 participants aged 40–69, collected between 2006 and 2010, to support health research. It includes baseline data from physical assessments, questionnaires, and health records, alongside genetic information from genotyping and sequencing. The resource also features imaging data (e.g., MRI and DEXA scans), biological samples (blood, urine, and saliva), linked health records (hospital admissions, primary care, and disease registries), activity data from wearable devices, and environmental information on air quality and socioeconomic factors. This extensive dataset is designed to advance understanding, prevention, diagnosis, and treatment of a wide range of diseases.
+
+After the data cleaning steps, the cleaned dataset includes 413,146 observations and 113 variables. Although we will not use all the variables in this dataset, we will select multiple key variables to investigate our research questions:
+
+`expo_npar_cat`: Neutrophil-to-albumin ratio categorized into quartiles (Q1 = lowest, Q4 = highest). <br> 
+
+`age`: Participants' age, categorized into 10-year age groups (e.g., 30–39, 40–49, etc.). <br> 
+
+`sex`: Male or female. <br> 
+
+`income`: Seven income brackets, ranging from 1 (lowest) to 7 (highest). <br> 
+
+`townsend`: Townsend deprivation index, a measure of socioeconomic status, where higher values indicate greater deprivation. <br> 
+
+`total_met`: Total metabolic equivalent of task score, derived from physical activity data and grouped into categories. <br> 
+
+`diet_quality`: Diet quality score, ranging from 0 (poorest) to 7 (highest), based on adherence 
+to dietary guidelines. <br> 
+
+`sleep_hour`: Nightly sleep duration, measured in hours. <br> 
+
+`smoke_cat`: Smoking status, categorized as current smoker, past smoker, or non-smoker. <br> 
+
+`total_alcohol`: Total alcohol consumption, grouped into categories (non-drinker, low, moderate, high, very high). <br> 
+
+`non_hdl`: Non-HDL cholesterol level, a continuous variable indicating cardiovascular risk. <br> 
+
+`tg`: Triglyceride levels, a continuous measure of blood lipid levels. <br> 
+
+`bp_cat`: Blood pressure, categorized into intervals (e.g., BP=20, 40, 60, etc.). <br> 
+
+
+<br>
+
+#### Exposure Variables
+**Lymphocyte-to-Monocyte Ratio (LMR):**
+$$\text{LMR} = \frac{\text{Absolute Lymphocyte Count}}{\text{Absolute Monocyte Count}}$$
+
+<br>
+
+**Systemic Immune-Inflammation Index (SII):**
+$$\text{SII} = \frac{\text{Neutrophil Count} \times \text{Platelet Count}}{\text{Lymphocyte Count}}$$
+
+<br>
+
+**Naples Prognostic Score (NPS):** \newline
+This score is based on a combination of factors, typically including:
+
+- Albumin level (<4 g/dL = 1 point). 
+- Neutrophil-to-Lymphocyte Ratio (NLR) (>3 = 1 point). 
+- Lymphocyte-to-Monocyte Ratio (LMR) (<4.44 = 1 point). 
+- Platelet-to-Lymphocyte Ratio (PLR) (>150 = 1 point). 
+
+The final NPS is the sum of these points (range: 0–4).
+
+<br>
+
+**Neutrophil-Percentage-to-Albumin Ratio (NPAR):**
+$$\text{NPAR} = \frac{\text{Neutrophil Percentage}}{\text{Albumin Level (g/dL)}}$$
+
+<br>
+
+### Data Cleaning
+#### Data Cleaning Part One
+[View Full Part One Data Cleaning Steps on GitHub](https://github.com/DangLin1214/test4.github.io/blob/main/pre_cleaning.md)
+
+The pre-cleaning process involved several key steps to transform the raw UKB dataset into a clean, analyzable format. Initially, variables were renamed to improve clarity and usability. For instance, `n_21022_0_0` was renamed to `age`, `n_31_0_0` to `sex`, and `n_21000_0_0` to `ethnicity`. New variables were derived from existing data to enhance analysis potential. For example, physical activity metrics such as `MET_walk` (`n_22037_0_0`), `MET_moderate` (`n_22038_0_0`), and `MET_vigorous` (`n_22039_0_0`) were combined to create `total_MET`, which was further categorized into activity levels using `pa_cat`. Invalid or missing data values, such as `-3` and `-1`, were replaced with `.` (missing), while specific imputations were applied where necessary, such as assigning `0.5` to dietary variables like `cooked_vegetable_0` when valid data was unavailable.
+
+Variables were categorized for analytical ease, such as grouping physical activity, sleep, and dietary patterns. Dietary components like vegetables, fruits, fish, red meat, and grains were processed to create binary indicators of "healthy" consumption (e.g., `healthy_vegetable` for ≥3 servings/day of vegetables and `healthy_red_meat` for ≤1.5 servings/week of red meat). An aggregate dietary quality score (`diet_quality`) was computed by summing these indicators and further categorized into quality levels.
+
+For sleep patterns, multiple variables such as chronotype (`Chronotype_preference_0`), insomnia (`Insomnia_0`), snoring (`snoring_0`), and daytime sleepiness (`daytime_sleepiness_0`) were processed to calculate a composite sleep quality score (`sleep_quality`). This score was then combined with categorized sleep duration (`sleep_cat`) to refine the assessment of overall sleep health.
+
+Lifestyle factors like smoking and alcohol consumption were also carefully processed. Smoking history variables (`smoke_current` and `smoke_past`) were combined to categorize individuals' smoking behavior into `smoke_cat`. Alcohol consumption was calculated using variables like `redwine_week`, `beer_week`, and `spirits_week`, and total intake was categorized into risk levels.
+
+Biomarkers such as lipid and glucose levels were processed to generate new variables like `non_hdl` (non-HDL cholesterol derived from `tc` and `hdl`) and `glu_cat` (glucose levels categorized based on clinical thresholds). Blood pressure variables (`sbp` and `dbp`) were similarly used to classify individuals into health risk categories.
+
+The cleaned and processed dataset, containing all these refined and derived variables, was saved as a new csv to be used for further analysis. This comprehensive pre-cleaning ensured that the dataset was both reliable and tailored to support the research objectives.
+
+<br>
+
+#### Data Cleaning Part Two
+[View Full Part Two Data Cleaning Steps on GitHub](https://github.com/DangLin1214/test4.github.io/blob/main/data_preparation.md)
+
+The subsequent data cleaning process was designed to ensure the dataset’s quality and readiness for complex analyses, including multi-state modeling. The process began with importing the csv file exported in the previous steps and standardizing variable names using `janitor::clean_names()` to improve readability and usability. Key variables were then transformed and categorized. For instance, `sex` was converted into a factor variable with 0 representing female and 1 representing male, while `ethnicity_cat` was categorized as 0 for white and 1 for others. Age was grouped into meaningful categories (`age_cat`): `<50`, `50–59`, `60–69`, and `≥70`. Socioeconomic variables, like `income`, and lifestyle variables, such as smoking status (`smoke_cat`), were also transformed into categorical factors.
+
+Participants with pre-existing conditions at baseline were excluded to ensure accurate survival and progression analyses. This included those with non-alcoholic fatty liver disease (NAFLD) or cirrhosis, identified through the variables `nafld_date` and `cirrho_date`. Outcome variables were created to classify participants' health status. For example, `nafld_outcome` and `cirrho_outcome` assigned 0 for healthy participants and 1 for those who developed the disease post-baseline. Missing disease dates were carefully imputed using other known dates, such as the death date (`death_date`) or lost-to-follow-up date (`lost_date`). For participants with no recorded outcomes, a default date of `2022-10-31` was used to mark the end of follow-up.
+
+To calculate disease progression metrics, survival durations were computed from the baseline to either disease diagnosis or the end of follow-up. These metrics were stored as `nafld_surv_duration` and `cirrho_surv_duration`. Blood test variables were also renamed and cleaned, including lymphocytes (`b_lympho`), monocytes (`b_mono`), platelets (`b_plate`), and neutrophils (`b_neutro`). Observations with missing values in these variables were dropped to ensure reliable downstream analyses.
+
+New biomarkers were derived to assess participants' health status and inflammation levels. For example, the lymphocyte-to-monocyte ratio (`expo_lmr`), systemic immune-inflammation index (`expo_sii`), and neutrophil-to-albumin ratio (`expo_npar`) were calculated. Critical thresholds were applied to categorize these biomarkers into clinical risk groups, such as low albumin levels (`cri_album` <4 g/dL) or high neutrophil-to-lymphocyte ratios (`cri_nlr` >3). Biomarkers were further categorized into quartiles using a custom function (`cut_1_23_4`) to allow for stratified analyses.
+
+The final dataset included essential variables, such as demographics (`sex`, `age`), lifestyle factors (`smoke_cat`, `total_alcohol`), biomarkers (e.g., `tc` for total cholesterol, `hdl` for high-density lipoprotein, `hba1c` for blood glucose), and disease outcomes. These variables were selected and exported as `data_prepared.dta`. For advanced analyses, such as multi-state modeling, the dataset was structured to capture transitions between disease states (Healthy → NAFLD → Cirrhosis → Death), including time intervals and durations. This ensured the dataset was robust, consistent, and ready for both descriptive and inferential analyses, particularly for modeling disease progression pathways.

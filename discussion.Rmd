@@ -1,0 +1,31 @@
+---
+title: "Discussion"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+### Discussion
+Our analysis provides valuable insights into the demographic, lifestyle, and health factors influencing disease outcomes, supported by hazard plots and Cox proportional hazards models. Age and sex distributions revealed consistent trends, with older age groups experiencing greater variability in health outcomes, reflecting the combined impacts of longevity, comorbidities, and disparities in healthcare access. The observed inverse association between alcohol consumption and disease risk among non-drinkers may suggest confounding by pre-existing health conditions, such as abstinence due to chronic illnesses, highlighting the importance of considering behavioral context in exposure assessments.
+
+Blood pressure emerged as a significant predictor of disease risk, reaffirming the importance of hypertension management, particularly among older adults. Socioeconomic disparities were evident, with higher incomes positively associated with diet quality, emphasizing inequities in health behaviors and access to nutritious food. Sleep duration patterns varied across age groups, with younger participants showing shorter durations and older adults experiencing greater variability, likely linked to lifestyle factors and age-related changes in circadian rhythms. These findings underscore the complex interplay of demographic, behavioral, and socioeconomic factors influencing health risks.
+
+The hazard plots for the four exposure variables (`expo_lmr`, `expo_sii`, `expo_npar`, and `expo_nps`) demonstrated clear dose-response relationships with disease outcomes. Participants in the low exposure categories consistently exhibited the lowest cumulative hazard throughout the follow-up period, suggesting a protective effect against adverse outcomes. In contrast, participants in the high exposure categories displayed the steepest increases in cumulative hazard, reflecting significantly elevated risks associated with higher levels of these inflammatory and metabolic markers. These trends were statistically significant (p-values < 0.001), affirming the robustness of the observed associations.
+
+Intermediate exposure categories showed moderate cumulative hazard increases, representing incremental risks compared to the low categories but less severe than the high categories. These results highlight the continuum of risk associated with varying exposure levels and the need for targeted interventions to mitigate these risks and improve health outcomes.
+
+Demographic and behavioral variables, such as age, income, diet quality, and smoking status, played critical roles in shaping the observed risk trends. Older participants and individuals with lower incomes were overrepresented in higher exposure categories, compounding their vulnerability to adverse outcomes. Additionally, poor dietary habits and higher smoking prevalence in intermediate and high exposure groups exacerbated disparities in health outcomes. These findings emphasize the need to address not only the biological exposure markers but also the broader socioeconomic and behavioral determinants of health to reduce disparities and enhance population health.
+
+<br> 
+
+### Limitations
+Several limitations should be considered when interpreting the findings. First, the observational design of the study precludes definitive causal inferences between exposures and health outcomes. Residual confounding may persist despite adjustments for demographic, socioeconomic, and behavioral factors. Second, the reliance on baseline exposure measurements may not fully capture longitudinal changes in inflammatory and metabolic markers or lifestyle factors, which could influence disease progression. Third, the study population primarily comprises middle-aged to older adults, limiting the generalizability of findings to younger populations or diverse demographic groups. Lastly, while survival analysis accounts for censoring, potential biases due to loss to follow-up or incomplete data cannot be entirely ruled out. Future research should aim to address these limitations through longitudinal designs, diverse cohorts, and advanced causal modeling approaches to further validate and expand upon these findings.
+
+<br> 
+
+### Conclusion
+Our project integrates exploratory data analysis and survival analysis to investigate the intricate relationships between demographic, socioeconomic, behavioral, and baseline inflammatory indices in predicting disease outcomes. The findings underscore the important role of high-risk exposures, such as elevated inflammatory markers, in exacerbating disease risks like non-alcoholic fatty liver disease (NAFLD) and cirrhosis. Importantly, the interplay between these exposures and socioeconomic determinants, such as income and diet quality, highlights the compounded risks faced by vulnerable populations. Addressing these exposures, alongside reducing socioeconomic inequities, is essential for improving survival probabilities and mitigating disparities in health outcomes. These results provide a robust foundation for refining intervention strategies, guiding targeted clinical management, and informing public health policies to enhance population health and equity. 
+
