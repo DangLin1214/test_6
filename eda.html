@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Exploratory Data Analysis</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="proposal.html">Proposal</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="introduction.html">Introduction</a>
+</li>
+<li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="eda.html">EDA</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
+<li>
+  <a href="appendix.html">Appendix</a>
+</li>
+<li>
+  <a href="mailto:&lt;dl3757@cumc.columbia.edu&gt;">
+    <span class="fa fa-play-circle fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="mailto:&lt;dl3757@cumc.columbia.edu&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/DangLin1214/test4.github.io.git">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Exploratory Data Analysis</h1>
+
+</div>
+
+
+<pre class="r"><code>ukb_data &lt;- read_dta(&quot;./external_data/data_prepared.dta&quot;)</code></pre>
+<div id="age-and-sex-distribution" class="section level3">
+<h3>Age and Sex Distribution</h3>
+<pre class="r"><code>figure_1 &lt;- ukb_data %&gt;%
+  mutate(age_group = cut(age, breaks = seq(10, 100, by = 10), right = FALSE, 
+                         labels = paste(seq(10, 90, by = 10), &quot;-&quot;, 
+                                        seq(19, 99, by = 10), sep = &quot;&quot;))) %&gt;%
+  ggplot(aes(x = age_group, y = age, fill = as.factor(sex))) + 
+  geom_boxplot(alpha = 0.9) + 
+  theme_minimal() +
+  labs(x = &#39;Age Groups&#39;, 
+       y = &#39;Age&#39;,
+       title = &#39;Age Distribution by Sex and Age Groups&#39;,
+       fill = &#39;Sex&#39;) +
+  scale_fill_manual(values = c(&quot;lightblue&quot;, &quot;lightpink&quot;),
+                    labels = c(&quot;Female&quot;, &quot;Male&quot;)) +
+  theme(legend.position = &quot;bottom&quot;)
+
+figure_1</code></pre>
+<p><img src="eda_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We examined the age distribution of male and female participants
+across 10-year age groups. In the 30-39 age group, the sample size was
+relatively small, with median ages and IQRs consistent across sexes.
+Similar trends were observed in the 40-49 and 50-59 groups. In the 60-69
+group, females exhibited slightly higher upper quartiles than males,
+while the 70-79 group showed broader distributions for females,
+indicating more variation in ages.</p>
+<p><br></p>
+</div>
+<div id="alcohol-consumption-and-disease-incidence"
+class="section level3">
+<h3>Alcohol Consumption and Disease Incidence</h3>
+<pre class="r"><code># Data cleaning
+disease_heat2 &lt;- ukb_data %&gt;%
+  filter(!is.na(sex), !is.na(total_alcohol), !is.na(nafld_outcome)) %&gt;%
+  mutate(
+    alcohol_group = cut(total_alcohol, 
+                       breaks = c(-Inf, 0, 5, 10, 15, Inf),
+                       labels = c(&quot;None&quot;, &quot;Low&quot;, &quot;Medium&quot;, &quot;High&quot;, &quot;Very High&quot;),
+                       include.lowest = TRUE)
+  ) %&gt;%
+  group_by(sex, alcohol_group) %&gt;%
+  summarise(
+    disease_rate = mean(nafld_outcome, na.rm = TRUE),
+    n = n()
+  ) %&gt;%
+  ungroup()
+
+ukb_data &lt;- ukb_data %&gt;%
+  mutate(
+    sex = as_factor(sex), 
+    nafld_outcome = as.numeric(as_factor(nafld_outcome)),
+    total_alcohol = as.numeric(total_alcohol),
+    income = as.numeric(income)
+  )
+
+disease_heat2 &lt;- ukb_data %&gt;%
+  filter(!is.na(sex), !is.na(total_alcohol), !is.na(nafld_outcome)) %&gt;%
+  mutate(
+    alcohol_group = cut(total_alcohol, 
+                       breaks = c(-Inf, 0, 5, 10, 15, Inf),
+                       labels = c(&quot;None&quot;, &quot;Low&quot;, &quot;Medium&quot;, &quot;High&quot;, &quot;Very High&quot;),
+                       include.lowest = TRUE)
+  ) %&gt;%
+  group_by(sex, alcohol_group) %&gt;%
+  summarise(
+    disease_rate = mean(nafld_outcome, na.rm = TRUE),
+    n = n()
+  ) %&gt;%
+  ungroup()
+
+# Create heatmap
+figure_2 &lt;- ggplot(disease_heat2, aes(x = sex, y = alcohol_group, fill = disease_rate)) +
+  geom_tile() +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;) +
+  theme_minimal() +
+  labs(title = &quot;Disease Incidence by Sex and Alcohol Consumption&quot;,
+       x = &quot;Sex&quot;,
+       y = &quot;Alcohol Consumption Level&quot;,
+       fill = &quot;Disease Rate&quot;) +
+  geom_text(aes(label = sprintf(&quot;n=%d&quot;, n)), color = &quot;black&quot;, size = 3)
+
+ggplotly(figure_2)</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-c969e7270934b072cbb5" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-c969e7270934b072cbb5">{"x":{"data":[{"x":[1,2],"y":[1,2,3,4,5],"z":[[0.82057569108874562,1],[0.22704796615452749,0.48526228787730302],[0.16852529319690782,0.38450705940091595],[0,0.22153646696810808],[0.3262653346628514,0.66272785222216235]],"text":[["sex: 0<br />alcohol_group: None<br />disease_rate: 1.035514","sex: 1<br />alcohol_group: None<br />disease_rate: 1.039129"],["sex: 0<br />alcohol_group: Low<br />disease_rate: 1.023555","sex: 1<br />alcohol_group: Low<br />disease_rate: 1.028758"],["sex: 0<br />alcohol_group: Medium<br />disease_rate: 1.022376","sex: 1<br />alcohol_group: Medium<br />disease_rate: 1.026728"],["sex: 0<br />alcohol_group: High<br />disease_rate: 1.018981","sex: 1<br />alcohol_group: High<br />disease_rate: 1.023444"],["sex: 0<br />alcohol_group: Very High<br />disease_rate: 1.025554","sex: 1<br />alcohol_group: Very High<br />disease_rate: 1.032333"]],"colorscale":[[0,"#FFFFFF"],[0.16852529319690782,"#FFDFD3"],[0.22153646696810808,"#FFD5C6"],[0.22704796615452749,"#FFD4C4"],[0.3262653346628514,"#FFC0AC"],[0.38450705940091595,"#FFB59D"],[0.48526228787730302,"#FFA185"],[0.66272785222216235,"#FF7C5B"],[0.82057569108874562,"#FF5635"],[1,"#FF0000"]],"type":"heatmap","showscale":false,"autocolorscale":false,"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,1,1,1,1,2,2,2,2,2],"y":[1,2,3,4,5,1,2,3,4,5],"text":["n=68002","n=41689","n=42411","n=30241","n=39954","n=34476","n=19160","n=26377","n=25166","n=85670"],"hovertext":["sex: 0<br />alcohol_group: None<br />disease_rate: 1.035514<br />sprintf(\"n=%d\", n): n=68002","sex: 0<br />alcohol_group: Low<br />disease_rate: 1.023555<br />sprintf(\"n=%d\", n): n=41689","sex: 0<br />alcohol_group: Medium<br />disease_rate: 1.022376<br />sprintf(\"n=%d\", n): n=42411","sex: 0<br />alcohol_group: High<br />disease_rate: 1.018981<br />sprintf(\"n=%d\", n): n=30241","sex: 0<br />alcohol_group: Very High<br />disease_rate: 1.025554<br />sprintf(\"n=%d\", n): n=39954","sex: 1<br />alcohol_group: None<br />disease_rate: 1.039129<br />sprintf(\"n=%d\", n): n=34476","sex: 1<br />alcohol_group: Low<br />disease_rate: 1.028758<br />sprintf(\"n=%d\", n): n=19160","sex: 1<br />alcohol_group: Medium<br />disease_rate: 1.026728<br />sprintf(\"n=%d\", n): n=26377","sex: 1<br />alcohol_group: High<br />disease_rate: 1.023444<br />sprintf(\"n=%d\", n): n=25166","sex: 1<br />alcohol_group: Very High<br />disease_rate: 1.032333<br />sprintf(\"n=%d\", n): n=85670"],"textfont":{"size":11.338582677165356,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[1],"name":"79b4128111ea6357d359bb1dd6d776b9","type":"scatter","mode":"markers","opacity":0,"hoverinfo":"skip","showlegend":false,"marker":{"color":[0,1],"colorscale":[[0,"#FFFFFF"],[0.0033444816053461207,"#FFFEFE"],[0.006688963210703263,"#FFFEFD"],[0.010033444816049383,"#FFFDFC"],[0.013377926421406526,"#FFFCFB"],[0.016722408026752646,"#FFFCFB"],[0.020066889632109789,"#FFFBFA"],[0.023411371237455909,"#FFFBF9"],[0.026755852842813052,"#FFFAF8"],[0.030100334448159172,"#FFF9F7"],[0.033444816053516312,"#FFF9F6"],[0.036789297658862435,"#FFF8F5"],[0.040133779264208552,"#FFF7F4"],[0.043478260869565695,"#FFF7F4"],[0.046822742474911819,"#FFF6F3"],[0.050167224080268961,"#FFF5F2"],[0.053511705685615078,"#FFF5F1"],[0.056856187290972221,"#FFF4F0"],[0.060200668896318345,"#FFF4EF"],[0.063545150501675488,"#FFF3EE"],[0.066889632107021604,"#FFF2EE"],[0.07023411371237874,"#FFF2ED"],[0.073578595317724871,"#FFF1EC"],[0.076923076923082007,"#FFF0EB"],[0.080267558528428137,"#FFF0EA"],[0.083612040133774254,"#FFEFE9"],[0.08695652173913139,"#FFEEE8"],[0.090301003344477521,"#FFEEE7"],[0.093645484949834656,"#FFEDE7"],[0.096989966555180773,"#FFEDE6"],[0.10033444816053792,"#FFECE5"],[0.10367892976588404,"#FFEBE4"],[0.10702341137124118,"#FFEBE3"],[0.11036789297658731,"#FFEAE2"],[0.11371237458194444,"#FFE9E1"],[0.11705685618729056,"#FFE9E1"],[0.12040133779263669,"#FFE8E0"],[0.12374581939799383,"#FFE7DF"],[0.12709030100333996,"#FFE7DE"],[0.13043478260869709,"#FFE6DD"],[0.13377926421404321,"#FFE5DC"],[0.13712374581940034,"#FFE5DB"],[0.14046822742474646,"#FFE4DB"],[0.14381270903010362,"#FFE4DA"],[0.14715719063544974,"#FFE3D9"],[0.15050167224080688,"#FFE2D8"],[0.15384615384615299,"#FFE2D7"],[0.15719063545151013,"#FFE1D6"],[0.16053511705685627,"#FFE0D5"],[0.16387959866220239,"#FFE0D5"],[0.16722408026755953,"#FFDFD4"],[0.17056856187290564,"#FFDED3"],[0.17391304347826278,"#FFDED2"],[0.1772575250836089,"#FFDDD1"],[0.18060200668896606,"#FFDDD0"],[0.18394648829431218,"#FFDCCF"],[0.18729096989966931,"#FFDBCF"],[0.19063545150501543,"#FFDBCE"],[0.19397993311037257,"#FFDACD"],[0.19732441471571868,"#FFD9CC"],[0.20066889632106483,"#FFD9CB"],[0.20401337792642196,"#FFD8CA"],[0.20735785953176808,"#FFD7C9"],[0.21070234113712522,"#FFD7C9"],[0.21404682274247133,"#FFD6C8"],[0.2173913043478285,"#FFD5C7"],[0.22073578595317461,"#FFD5C6"],[0.22408026755853175,"#FFD4C5"],[0.22742474916387787,"#FFD4C4"],[0.230769230769235,"#FFD3C4"],[0.23411371237458112,"#FFD2C3"],[0.23745819397993828,"#FFD2C2"],[0.2408026755852844,"#FFD1C1"],[0.24414715719063051,"#FFD0C0"],[0.24749163879598765,"#FFD0BF"],[0.2508361204013338,"#FFCFBE"],[0.2541806020066909,"#FFCEBE"],[0.25752508361203702,"#FFCEBD"],[0.26086956521739418,"#FFCDBC"],[0.2642140468227403,"#FFCCBB"],[0.26755852842809746,"#FFCCBA"],[0.27090301003344358,"#FFCBB9"],[0.27424749163880069,"#FFCAB9"],[0.27759197324414681,"#FFCAB8"],[0.28093645484949292,"#FFC9B7"],[0.28428093645485009,"#FFC9B6"],[0.2876254180601962,"#FFC8B5"],[0.29096989966555337,"#FFC7B4"],[0.29431438127089948,"#FFC7B4"],[0.29765886287625659,"#FFC6B3"],[0.30100334448160271,"#FFC5B2"],[0.30434782608695987,"#FFC5B1"],[0.30769230769230599,"#FFC4B0"],[0.31103678929766315,"#FFC3AF"],[0.31438127090300927,"#FFC3AF"],[0.31772575250836638,"#FFC2AE"],[0.32107023411371255,"#FFC1AD"],[0.32441471571905867,"#FFC1AC"],[0.32775919732441577,"#FFC0AB"],[0.33110367892976189,"#FFBFAA"],[0.33444816053511905,"#FFBFAA"],[0.33779264214046517,"#FFBEA9"],[0.34113712374582233,"#FFBDA8"],[0.34448160535116845,"#FFBDA7"],[0.34782608695652556,"#FFBCA6"],[0.35117056856187168,"#FFBCA5"],[0.35451505016722884,"#FFBBA5"],[0.35785953177257496,"#FFBAA4"],[0.36120401337792107,"#FFBAA3"],[0.36454849498327824,"#FFB9A2"],[0.36789297658862435,"#FFB8A1"],[0.37123745819398146,"#FFB8A1"],[0.37458193979932758,"#FFB7A0"],[0.37792642140468474,"#FFB69F"],[0.38127090301003086,"#FFB69E"],[0.38461538461538802,"#FFB59D"],[0.38795986622073414,"#FFB49C"],[0.39130434782609125,"#FFB49C"],[0.39464882943143736,"#FFB39B"],[0.39799331103679453,"#FFB29A"],[0.40133779264214064,"#FFB299"],[0.40468227424748676,"#FFB198"],[0.40802675585284393,"#FFB098"],[0.41137123745819004,"#FFB097"],[0.41471571906354715,"#FFAF96"],[0.41806020066889332,"#FFAE95"],[0.42140468227425043,"#FFAE94"],[0.42474916387959655,"#FFAD93"],[0.42809364548495371,"#FFAC93"],[0.43143812709029983,"#FFAC92"],[0.43478260869565699,"#FFAB91"],[0.43812709030100311,"#FFAA90"],[0.44147157190634922,"#FFAA8F"],[0.44481605351170633,"#FFA98F"],[0.44816053511705245,"#FFA88E"],[0.45150501672240961,"#FFA88D"],[0.45484949832775573,"#FFA78C"],[0.45819397993311289,"#FFA68B"],[0.46153846153845901,"#FFA68B"],[0.46488294314381612,"#FFA58A"],[0.46822742474916224,"#FFA489"],[0.4715719063545194,"#FFA488"],[0.47491638795986552,"#FFA387"],[0.47826086956522268,"#FFA286"],[0.4816053511705688,"#FFA286"],[0.48494983277591491,"#FFA185"],[0.48829431438127202,"#FFA084"],[0.49163879598661819,"#FFA083"],[0.4949832775919753,"#FF9F82"],[0.49832775919732142,"#FF9E82"],[0.50167224080267858,"#FF9E81"],[0.50501672240802464,"#FF9D80"],[0.50836120401338181,"#FF9C7F"],[0.51170568561872798,"#FF9C7E"],[0.51505016722408514,"#FF9B7E"],[0.5183946488294312,"#FF9A7D"],[0.52173913043477738,"#FF9A7C"],[0.52508361204013443,"#FF997B"],[0.5284280936454806,"#FF987A"],[0.53177257525083776,"#FF977A"],[0.53511705685618383,"#FF9779"],[0.53846153846154099,"#FF9678"],[0.54180602006688716,"#FF9577"],[0.54515050167224421,"#FF9576"],[0.54849498327759039,"#FF9476"],[0.55183946488294755,"#FF9375"],[0.55518394648829361,"#FF9374"],[0.55852842809365078,"#FF9273"],[0.56187290969899695,"#FF9172"],[0.56521739130434301,"#FF9172"],[0.56856187290970017,"#FF9071"],[0.57190635451504634,"#FF8F70"],[0.5752508361204034,"#FF8E6F"],[0.57859531772574957,"#FF8E6E"],[0.58193979933110673,"#FF8D6E"],[0.58528428093645279,"#FF8C6D"],[0.58862876254180996,"#FF8C6C"],[0.59197324414715613,"#FF8B6B"],[0.59531772575251318,"#FF8A6B"],[0.59866220735785936,"#FF896A"],[0.60200668896320542,"#FF8969"],[0.60535117056856258,"#FF8868"],[0.60869565217390875,"#FF8767"],[0.61204013377926592,"#FF8767"],[0.61538461538461198,"#FF8666"],[0.61872909698996914,"#FF8565"],[0.6220735785953152,"#FF8464"],[0.62541806020067237,"#FF8463"],[0.62876254180601854,"#FF8363"],[0.6321070234113757,"#FF8262"],[0.63545150501672176,"#FF8261"],[0.63879598662207893,"#FF8160"],[0.6421404682274251,"#FF805F"],[0.64548494983277116,"#FF7F5F"],[0.64882943143812832,"#FF7F5E"],[0.65217391304347438,"#FF7E5D"],[0.65551839464883155,"#FF7D5C"],[0.65886287625417772,"#FF7C5C"],[0.66220735785953488,"#FF7C5B"],[0.66555183946488095,"#FF7B5A"],[0.66889632107023811,"#FF7A59"],[0.67224080267558417,"#FF7A58"],[0.67558528428094133,"#FF7958"],[0.67892976588628751,"#FF7857"],[0.68227424749163357,"#FF7756"],[0.68561872909699073,"#FF7755"],[0.6889632107023369,"#FF7654"],[0.69230769230769396,"#FF7554"],[0.69565217391304013,"#FF7453"],[0.69899665551839729,"#FF7452"],[0.70234113712374335,"#FF7351"],[0.70568561872910052,"#FF7251"],[0.70903010033444669,"#FF7150"],[0.71237458193980374,"#FF704F"],[0.71571906354514991,"#FF704E"],[0.71906354515050708,"#FF6F4D"],[0.72240802675585314,"#FF6E4D"],[0.72575250836119931,"#FF6D4C"],[0.72909698996655647,"#FF6D4B"],[0.73244147157190254,"#FF6C4A"],[0.7357859531772597,"#FF6B4A"],[0.73913043478260587,"#FF6A49"],[0.74247491638796292,"#FF6948"],[0.7458193979933091,"#FF6947"],[0.74916387959866626,"#FF6846"],[0.75250836120401232,"#FF6746"],[0.75585284280936949,"#FF6645"],[0.75919732441471566,"#FF6544"],[0.76254180602006172,"#FF6543"],[0.76588628762541888,"#FF6442"],[0.76923076923076494,"#FF6342"],[0.77257525083612211,"#FF6241"],[0.77591973244146828,"#FF6140"],[0.77926421404682544,"#FF603F"],[0.7826086956521715,"#FF603E"],[0.78595317725752867,"#FF5F3E"],[0.78929765886287473,"#FF5E3D"],[0.79264214046823189,"#FF5D3C"],[0.79598662207357807,"#FF5C3B"],[0.79933110367892413,"#FF5B3B"],[0.80267558528428129,"#FF5A3A"],[0.80602006688962746,"#FF5939"],[0.80936454849498451,"#FF5938"],[0.81270903010033069,"#FF5837"],[0.81605351170568785,"#FF5737"],[0.81939799331103391,"#FF5636"],[0.82274247491639108,"#FF5535"],[0.82608695652173725,"#FF5434"],[0.8294314381270943,"#FF5333"],[0.83277591973244047,"#FF5232"],[0.83612040133779764,"#FF5132"],[0.8394648829431437,"#FF5031"],[0.84280936454848987,"#FF4F30"],[0.84615384615384703,"#FF4E2F"],[0.84949832775919309,"#FF4E2E"],[0.85284280936455026,"#FF4D2E"],[0.85618729096989643,"#FF4C2D"],[0.85953177257525348,"#FF4B2C"],[0.86287625418059966,"#FF4A2B"],[0.86622073578595682,"#FF492A"],[0.86956521739130288,"#FF4829"],[0.87290969899666004,"#FF4629"],[0.87625418060200622,"#FF4528"],[0.87959866220736327,"#FF4427"],[0.88294314381270944,"#FF4326"],[0.8862876254180555,"#FF4225"],[0.88963210702341267,"#FF4124"],[0.89297658862875884,"#FF4023"],[0.896321070234116,"#FF3F23"],[0.89966555183946206,"#FF3E22"],[0.90301003344481923,"#FF3D21"],[0.9063545150501654,"#FF3B20"],[0.90969899665552245,"#FF3A1F"],[0.91304347826086862,"#FF391E"],[0.91638795986622579,"#FF381D"],[0.91973244147157185,"#FF361C"],[0.92307692307691802,"#FF351B"],[0.92642140468227518,"#FF341A"],[0.92976588628762125,"#FF3219"],[0.93311036789297841,"#FF3118"],[0.93645484949832447,"#FF3017"],[0.93979933110368163,"#FF2E16"],[0.94314381270902781,"#FF2D15"],[0.94648829431438497,"#FF2B14"],[0.94983277591973103,"#FF2A13"],[0.9531772575250882,"#FF2812"],[0.95652173913043426,"#FF2611"],[0.95986622073578043,"#FF2410"],[0.96321070234113759,"#FF230F"],[0.96655518394648365,"#FF210D"],[0.96989966555184082,"#FF1F0C"],[0.97324414715718699,"#FF1C0B"],[0.97658862876254404,"#FF1A09"],[0.97993311036789021,"#FF1708"],[0.98327759197324738,"#FF1506"],[0.98662207357859344,"#FF1205"],[0.9899665551839506,"#FF0E04"],[0.99331103678929678,"#FF0A02"],[0.99665551839465383,"#FF0501"],[1,"#FF0000"]],"colorbar":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"thickness":23.039999999999996,"title":"Disease Rate","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"tickmode":"array","ticktext":["1.020","1.025","1.030","1.035"],"tickvals":[0.052081514010635571,0.29942015750982087,0.54675880100901719,0.79409744450820263],"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"ticklen":2,"len":0.5}},"xaxis":"x","yaxis":"y","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":40.182648401826498,"l":78.173515981735179},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Disease Incidence by Sex and Alcohol Consumption","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,2.6000000000000001],"tickmode":"array","ticktext":["0","1"],"tickvals":[1,2],"categoryorder":"array","categoryarray":["0","1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Sex","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,5.5999999999999996],"tickmode":"array","ticktext":["None","Low","Medium","High","Very High"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["None","Low","Medium","High","Very High"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Alcohol Consumption Level","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Disease Rate","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"13bd2c5b7355":{"x":{},"y":{},"fill":{},"type":"heatmap"},"13bd27f0e833":{"x":{},"y":{},"fill":{},"label":{}}},"cur_data":"13bd2c5b7355","visdat":{"13bd2c5b7355":["function (y) ","x"],"13bd27f0e833":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>A heatmap analysis revealed an inverse relationship between alcohol
+consumption and disease incidence. Non-drinkers exhibited the highest
+disease rates, with males outnumbering females. In contrast,
+participants with very high alcohol consumption had the lowest disease
+rates. Across all categories, females demonstrated slightly higher
+disease rates than males.</p>
+<p><br></p>
+</div>
+<div id="blood-pressure-and-age-trends" class="section level3">
+<h3>Blood Pressure and Age Trends</h3>
+<pre class="r"><code># Data Cleaning
+disease_heat1 &lt;- ukb_data %&gt;%
+  filter(!is.na(age), !is.na(bp_cat), !is.na(nafld_outcome)) %&gt;%
+  mutate(
+    bp_cat = as_factor(bp_cat),
+    age_group = cut(age, 
+                   breaks = c(30, 40, 50, 60, 70, 80),
+                   labels = c(&quot;30-40&quot;, &quot;40-50&quot;, &quot;50-60&quot;, &quot;60-70&quot;, &quot;70-80&quot;),
+                   include.lowest = TRUE)
+  ) %&gt;%
+  group_by(age_group, bp_cat) %&gt;%
+  summarise(
+    disease_rate = mean(nafld_outcome, na.rm = TRUE),
+    n = n()
+  ) %&gt;%
+  ungroup()
+
+# Create heatmap 
+figure_4 &lt;- ggplot(disease_heat1, aes(x = age_group, y = bp_cat, fill = disease_rate)) +
+  geom_tile() +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45)) +
+  labs(title = &quot;Disease Incidence by Age and Blood Pressure Category&quot;,
+       x = &quot;Age Groups&quot;,
+       y = &quot;BP Category&quot;,
+       fill = &quot;Disease Rate&quot;) +
+  geom_text(aes(label = sprintf(&quot;n=%d&quot;, n)), color = &quot;black&quot;, size = 3)
+
+ggplotly(figure_4)</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-5183cc79ee55e5d86de4" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-5183cc79ee55e5d86de4">{"x":{"data":[{"x":[1,2,3,4,5],"y":[1,2,3,4,5,6],"z":[[0.57077625570776058,0.66555740432612198,0.76061997703788453,0.80479913723375751,null],[1,0.90316849274503708,0.86674838031868184,0.8493136511002245,0],[0.70312499999999822,0.71136954101200178,0.79263728037341985,0.86086879901313063,0],[0.55379746835442734,0.57466206702337319,0.67527519051651053,0.79144773801262325,0],[0.44709388971684266,0.40545389307499147,0.61726475527085156,0.74904339036892464,0],[0.34904013961605773,0.37320143884891877,0.59903706191915485,0.7002398081534793,null]],"text":[["age_group: 30-40<br />bp_cat: 0<br />disease_rate: 1.022831","age_group: 40-50<br />bp_cat: 0<br />disease_rate: 1.026622","age_group: 50-60<br />bp_cat: 0<br />disease_rate: 1.030425","age_group: 60-70<br />bp_cat: 0<br />disease_rate: 1.032192",null],["age_group: 30-40<br />bp_cat: 20<br />disease_rate: 1.040000","age_group: 40-50<br />bp_cat: 20<br />disease_rate: 1.036127","age_group: 50-60<br />bp_cat: 20<br />disease_rate: 1.034670","age_group: 60-70<br />bp_cat: 20<br />disease_rate: 1.033973","age_group: 70-80<br />bp_cat: 20<br />disease_rate: 1.000000"],["age_group: 30-40<br />bp_cat: 40<br />disease_rate: 1.028125","age_group: 40-50<br />bp_cat: 40<br />disease_rate: 1.028455","age_group: 50-60<br />bp_cat: 40<br />disease_rate: 1.031705","age_group: 60-70<br />bp_cat: 40<br />disease_rate: 1.034435","age_group: 70-80<br />bp_cat: 40<br />disease_rate: 1.000000"],["age_group: 30-40<br />bp_cat: 60<br />disease_rate: 1.022152","age_group: 40-50<br />bp_cat: 60<br />disease_rate: 1.022986","age_group: 50-60<br />bp_cat: 60<br />disease_rate: 1.027011","age_group: 60-70<br />bp_cat: 60<br />disease_rate: 1.031658","age_group: 70-80<br />bp_cat: 60<br />disease_rate: 1.000000"],["age_group: 30-40<br />bp_cat: 80<br />disease_rate: 1.017884","age_group: 40-50<br />bp_cat: 80<br />disease_rate: 1.016218","age_group: 50-60<br />bp_cat: 80<br />disease_rate: 1.024691","age_group: 60-70<br />bp_cat: 80<br />disease_rate: 1.029962","age_group: 70-80<br />bp_cat: 80<br />disease_rate: 1.000000"],["age_group: 30-40<br />bp_cat: 100<br />disease_rate: 1.013962","age_group: 40-50<br />bp_cat: 100<br />disease_rate: 1.014928","age_group: 50-60<br />bp_cat: 100<br />disease_rate: 1.023961","age_group: 60-70<br />bp_cat: 100<br />disease_rate: 1.028010",null]],"colorscale":[[0,"#FFFFFF"],[0.34904013961605773,"#FFBCA6"],[0.37320143884891877,"#FFB7A0"],[0.40545389307499147,"#FFB198"],[0.44709388971684266,"#FFA98E"],[0.55379746835442734,"#FF9374"],[0.57077625570776058,"#FF8F70"],[0.57466206702337319,"#FF8F6F"],[0.59903706191915485,"#FF896A"],[0.61726475527085156,"#FF8665"],[0.66555740432612198,"#FF7B5A"],[0.67527519051651053,"#FF7958"],[0.7002398081534793,"#FF7352"],[0.70312499999999822,"#FF7351"],[0.71136954101200178,"#FF714F"],[0.74904339036892464,"#FF6846"],[0.76061997703788453,"#FF6544"],[0.79144773801262325,"#FF5D3C"],[0.79263728037341985,"#FF5D3C"],[0.80479913723375751,"#FF5A39"],[0.8493136511002245,"#FF4E2E"],[0.86086879901313063,"#FF4A2C"],[0.86674838031868184,"#FF482A"],[0.90316849274503708,"#FF3D21"],[1,"#FF0000"]],"type":"heatmap","showscale":false,"autocolorscale":false,"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,5,5,5,5],"y":[1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,2,3,4,5],"text":["n=219","n=200","n=960","n=1264","n=671","n=1146","n=8414","n=6754","n=24249","n=28408","n=13935","n=22240","n=13936","n=17133","n=45418","n=35430","n=16079","n=17862","n=18545","n=28994","n=56745","n=30261","n=13851","n=10425","n=2","n=2","n=2","n=1"],"hovertext":["age_group: 30-40<br />bp_cat: 0<br />disease_rate: 1.022831<br />sprintf(\"n=%d\", n): n=219","age_group: 30-40<br />bp_cat: 20<br />disease_rate: 1.040000<br />sprintf(\"n=%d\", n): n=200","age_group: 30-40<br />bp_cat: 40<br />disease_rate: 1.028125<br />sprintf(\"n=%d\", n): n=960","age_group: 30-40<br />bp_cat: 60<br />disease_rate: 1.022152<br />sprintf(\"n=%d\", n): n=1264","age_group: 30-40<br />bp_cat: 80<br />disease_rate: 1.017884<br />sprintf(\"n=%d\", n): n=671","age_group: 30-40<br />bp_cat: 100<br />disease_rate: 1.013962<br />sprintf(\"n=%d\", n): n=1146","age_group: 40-50<br />bp_cat: 0<br />disease_rate: 1.026622<br />sprintf(\"n=%d\", n): n=8414","age_group: 40-50<br />bp_cat: 20<br />disease_rate: 1.036127<br />sprintf(\"n=%d\", n): n=6754","age_group: 40-50<br />bp_cat: 40<br />disease_rate: 1.028455<br />sprintf(\"n=%d\", n): n=24249","age_group: 40-50<br />bp_cat: 60<br />disease_rate: 1.022986<br />sprintf(\"n=%d\", n): n=28408","age_group: 40-50<br />bp_cat: 80<br />disease_rate: 1.016218<br />sprintf(\"n=%d\", n): n=13935","age_group: 40-50<br />bp_cat: 100<br />disease_rate: 1.014928<br />sprintf(\"n=%d\", n): n=22240","age_group: 50-60<br />bp_cat: 0<br />disease_rate: 1.030425<br />sprintf(\"n=%d\", n): n=13936","age_group: 50-60<br />bp_cat: 20<br />disease_rate: 1.034670<br />sprintf(\"n=%d\", n): n=17133","age_group: 50-60<br />bp_cat: 40<br />disease_rate: 1.031705<br />sprintf(\"n=%d\", n): n=45418","age_group: 50-60<br />bp_cat: 60<br />disease_rate: 1.027011<br />sprintf(\"n=%d\", n): n=35430","age_group: 50-60<br />bp_cat: 80<br />disease_rate: 1.024691<br />sprintf(\"n=%d\", n): n=16079","age_group: 50-60<br />bp_cat: 100<br />disease_rate: 1.023961<br />sprintf(\"n=%d\", n): n=17862","age_group: 60-70<br />bp_cat: 0<br />disease_rate: 1.032192<br />sprintf(\"n=%d\", n): n=18545","age_group: 60-70<br />bp_cat: 20<br />disease_rate: 1.033973<br />sprintf(\"n=%d\", n): n=28994","age_group: 60-70<br />bp_cat: 40<br />disease_rate: 1.034435<br />sprintf(\"n=%d\", n): n=56745","age_group: 60-70<br />bp_cat: 60<br />disease_rate: 1.031658<br />sprintf(\"n=%d\", n): n=30261","age_group: 60-70<br />bp_cat: 80<br />disease_rate: 1.029962<br />sprintf(\"n=%d\", n): n=13851","age_group: 60-70<br />bp_cat: 100<br />disease_rate: 1.028010<br />sprintf(\"n=%d\", n): n=10425","age_group: 70-80<br />bp_cat: 20<br />disease_rate: 1.000000<br />sprintf(\"n=%d\", n): n=2","age_group: 70-80<br />bp_cat: 40<br />disease_rate: 1.000000<br />sprintf(\"n=%d\", n): n=2","age_group: 70-80<br />bp_cat: 60<br />disease_rate: 1.000000<br />sprintf(\"n=%d\", n): n=2","age_group: 70-80<br />bp_cat: 80<br />disease_rate: 1.000000<br />sprintf(\"n=%d\", n): n=1"],"textfont":{"size":11.338582677165356,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[1],"name":"4229f6254116c600aacd1a8f3cba0738","type":"scatter","mode":"markers","opacity":0,"hoverinfo":"skip","showlegend":false,"marker":{"color":[0,1],"colorscale":[[0,"#FFFFFF"],[0.003344481605349611,"#FFFEFE"],[0.0066889632107047731,"#FFFEFD"],[0.010033444816054385,"#FFFDFC"],[0.013377926421403995,"#FFFCFB"],[0.016722408026753607,"#FFFCFB"],[0.020066889632108769,"#FFFBFA"],[0.02341137123745838,"#FFFBF9"],[0.02675585284280799,"#FFFAF8"],[0.030100334448163152,"#FFF9F7"],[0.033444816053512766,"#FFF9F6"],[0.036789297658862373,"#FFF8F5"],[0.040133779264211987,"#FFF7F4"],[0.043478260869567145,"#FFF7F4"],[0.046822742474916759,"#FFF6F3"],[0.050167224080266373,"#FFF5F2"],[0.05351170568561598,"#FFF5F1"],[0.056856187290971145,"#FFF4F0"],[0.060200668896320753,"#FFF4EF"],[0.063545150501670367,"#FFF3EE"],[0.066889632107025532,"#FFF2EE"],[0.070234113712375146,"#FFF2ED"],[0.073578595317724746,"#FFF1EC"],[0.07692307692307436,"#FFF0EB"],[0.080267558528429525,"#FFF0EA"],[0.083612040133779139,"#FFEFE9"],[0.086956521739128739,"#FFEEE8"],[0.090301003344483904,"#FFEEE7"],[0.093645484949833518,"#FFEDE7"],[0.096989966555183132,"#FFEDE6"],[0.10033444816053275,"#FFECE5"],[0.1036789297658879,"#FFEBE4"],[0.10702341137123751,"#FFEBE3"],[0.11036789297658713,"#FFEAE2"],[0.11371237458194229,"#FFE9E1"],[0.11705685618729191,"#FFE9E1"],[0.12040133779264151,"#FFE8E0"],[0.12374581939799112,"#FFE7DF"],[0.12709030100334628,"#FFE7DE"],[0.1304347826086959,"#FFE6DD"],[0.13377926421404551,"#FFE5DC"],[0.13712374581940068,"#FFE5DB"],[0.14046822742475029,"#FFE4DB"],[0.14381270903009988,"#FFE4DA"],[0.14715719063544949,"#FFE3D9"],[0.15050167224080466,"#FFE2D8"],[0.15384615384615427,"#FFE2D7"],[0.15719063545150389,"#FFE1D6"],[0.1605351170568535,"#FFE0D5"],[0.16387959866220866,"#FFE0D5"],[0.16722408026755828,"#FFDFD4"],[0.17056856187290789,"#FFDED3"],[0.17391304347826303,"#FFDED2"],[0.17725752508361264,"#FFDDD1"],[0.18060200668896226,"#FFDDD0"],[0.18394648829431187,"#FFDCCF"],[0.18729096989966704,"#FFDBCF"],[0.19063545150501665,"#FFDBCE"],[0.19397993311036626,"#FFDACD"],[0.19732441471572143,"#FFD9CC"],[0.20066889632107104,"#FFD9CB"],[0.20401337792642063,"#FFD8CA"],[0.20735785953177024,"#FFD7C9"],[0.21070234113712541,"#FFD7C9"],[0.21404682274247502,"#FFD6C8"],[0.21739130434782464,"#FFD5C7"],[0.2207357859531798,"#FFD5C6"],[0.22408026755852942,"#FFD4C5"],[0.22742474916387903,"#FFD4C4"],[0.23076923076922864,"#FFD3C4"],[0.23411371237458381,"#FFD2C3"],[0.2374581939799334,"#FFD2C2"],[0.24080267558528301,"#FFD1C1"],[0.24414715719063818,"#FFD0C0"],[0.24749163879598779,"#FFD0BF"],[0.2508361204013374,"#FFCFBE"],[0.25418060200668702,"#FFCEBE"],[0.25752508361204218,"#FFCEBD"],[0.2608695652173918,"#FFCDBC"],[0.26421404682274141,"#FFCCBB"],[0.26755852842809102,"#FFCCBA"],[0.27090301003344619,"#FFCBB9"],[0.2742474916387958,"#FFCAB9"],[0.27759197324414542,"#FFCAB8"],[0.28093645484950058,"#FFC9B7"],[0.28428093645485014,"#FFC9B6"],[0.28762541806019976,"#FFC8B5"],[0.29096989966554937,"#FFC7B4"],[0.29431438127090453,"#FFC7B4"],[0.29765886287625415,"#FFC6B3"],[0.30100334448160376,"#FFC5B2"],[0.30434782608695893,"#FFC5B1"],[0.30769230769230854,"#FFC4B0"],[0.31103678929765816,"#FFC3AF"],[0.31438127090300777,"#FFC3AF"],[0.31772575250836294,"#FFC2AE"],[0.32107023411371255,"#FFC1AD"],[0.32441471571906216,"#FFC1AC"],[0.32775919732441733,"#FFC0AB"],[0.33110367892976694,"#FFBFAA"],[0.33444816053511656,"#FFBFAA"],[0.33779264214046617,"#FFBEA9"],[0.34113712374582134,"#FFBDA8"],[0.34448160535117089,"#FFBDA7"],[0.34782608695652051,"#FFBCA6"],[0.35117056856187012,"#FFBCA5"],[0.35451505016722529,"#FFBBA5"],[0.3578595317725749,"#FFBAA4"],[0.36120401337792452,"#FFBAA3"],[0.36454849498327968,"#FFB9A2"],[0.36789297658862929,"#FFB8A1"],[0.37123745819397891,"#FFB8A1"],[0.37458193979932852,"#FFB7A0"],[0.37792642140468369,"#FFB69F"],[0.3812709030100333,"#FFB69E"],[0.38461538461538292,"#FFB59D"],[0.38795986622073808,"#FFB49C"],[0.3913043478260877,"#FFB49C"],[0.39464882943143731,"#FFB39B"],[0.39799331103678692,"#FFB29A"],[0.40133779264214209,"#FFB299"],[0.4046822742474917,"#FFB198"],[0.40802675585284126,"#FFB098"],[0.41137123745819643,"#FFB097"],[0.41471571906354604,"#FFAF96"],[0.41806020066889565,"#FFAE95"],[0.42140468227424527,"#FFAE94"],[0.42474916387960043,"#FFAD93"],[0.42809364548495005,"#FFAC93"],[0.43143812709029966,"#FFAC92"],[0.43478260869565483,"#FFAB91"],[0.43812709030100444,"#FFAA90"],[0.44147157190635405,"#FFAA8F"],[0.44481605351170367,"#FFA98F"],[0.44816053511705883,"#FFA88E"],[0.45150501672240845,"#FFA88D"],[0.45484949832775806,"#FFA78C"],[0.45819397993310768,"#FFA68B"],[0.46153846153846284,"#FFA68B"],[0.46488294314381245,"#FFA58A"],[0.46822742474916207,"#FFA489"],[0.47157190635451718,"#FFA488"],[0.47491638795986679,"#FFA387"],[0.47826086956521641,"#FFA286"],[0.48160535117056602,"#FFA286"],[0.48494983277592119,"#FFA185"],[0.4882943143812708,"#FFA084"],[0.49163879598662041,"#FFA083"],[0.49498327759197558,"#FF9F82"],[0.49832775919732519,"#FF9E82"],[0.50167224080267481,"#FF9E81"],[0.50501672240802442,"#FF9D80"],[0.50836120401337959,"#FF9C7F"],[0.5117056856187292,"#FF9C7E"],[0.51505016722407881,"#FF9B7E"],[0.51839464882943398,"#FF9A7D"],[0.52173913043478359,"#FF9A7C"],[0.52508361204013321,"#FF997B"],[0.52842809364548282,"#FF987A"],[0.53177257525083799,"#FF977A"],[0.5351170568561876,"#FF9779"],[0.53846153846153721,"#FF9678"],[0.54180602006689238,"#FF9577"],[0.54515050167224199,"#FF9576"],[0.54849498327759161,"#FF9476"],[0.55183946488294122,"#FF9375"],[0.55518394648829639,"#FF9374"],[0.558528428093646,"#FF9273"],[0.56187290969899562,"#FF9172"],[0.56521739130434512,"#FF9172"],[0.56856187290970028,"#FF9071"],[0.5719063545150499,"#FF8F70"],[0.57525083612039951,"#FF8E6F"],[0.57859531772575468,"#FF8E6E"],[0.58193979933110429,"#FF8D6E"],[0.5852842809364539,"#FF8C6D"],[0.58862876254180352,"#FF8C6C"],[0.59197324414715868,"#FF8B6B"],[0.5953177257525083,"#FF8A6B"],[0.59866220735785791,"#FF896A"],[0.60200668896321308,"#FF8969"],[0.60535117056856269,"#FF8868"],[0.6086956521739123,"#FF8767"],[0.61204013377926192,"#FF8767"],[0.61538461538461708,"#FF8666"],[0.6187290969899667,"#FF8565"],[0.62207357859531631,"#FF8464"],[0.62541806020067148,"#FF8463"],[0.62876254180602109,"#FF8363"],[0.63210702341137071,"#FF8262"],[0.63545150501672032,"#FF8261"],[0.63879598662207548,"#FF8160"],[0.6421404682274251,"#FF805F"],[0.64548494983277471,"#FF7F5F"],[0.64882943143812433,"#FF7F5E"],[0.65217391304347949,"#FF7E5D"],[0.65551839464882911,"#FF7D5C"],[0.65886287625417872,"#FF7C5C"],[0.66220735785953388,"#FF7C5B"],[0.6655518394648835,"#FF7B5A"],[0.66889632107023311,"#FF7A59"],[0.67224080267558273,"#FF7A58"],[0.67558528428093789,"#FF7958"],[0.67892976588628751,"#FF7857"],[0.68227424749163712,"#FF7756"],[0.68561872909699229,"#FF7755"],[0.68896321070234179,"#FF7654"],[0.6923076923076914,"#FF7554"],[0.69565217391304102,"#FF7453"],[0.69899665551839618,"#FF7452"],[0.7023411371237458,"#FF7351"],[0.70568561872909541,"#FF7251"],[0.70903010033445057,"#FF7150"],[0.71237458193980019,"#FF704F"],[0.7157190635451498,"#FF704E"],[0.71906354515049942,"#FF6F4D"],[0.72240802675585458,"#FF6E4D"],[0.7257525083612042,"#FF6D4C"],[0.72909698996655381,"#FF6D4B"],[0.73244147157190898,"#FF6C4A"],[0.73578595317725859,"#FF6B4A"],[0.7391304347826082,"#FF6A49"],[0.74247491638795782,"#FF6948"],[0.74581939799331298,"#FF6947"],[0.7491638795986626,"#FF6846"],[0.75250836120401221,"#FF6746"],[0.75585284280936182,"#FF6645"],[0.75919732441471699,"#FF6544"],[0.7625418060200666,"#FF6543"],[0.76588628762541622,"#FF6442"],[0.76923076923077138,"#FF6342"],[0.772575250836121,"#FF6241"],[0.77591973244147061,"#FF6140"],[0.77926421404682022,"#FF603F"],[0.78260869565217539,"#FF603E"],[0.785953177257525,"#FF5F3E"],[0.78929765886287462,"#FF5E3D"],[0.79264214046822978,"#FF5D3C"],[0.7959866220735794,"#FF5C3B"],[0.79933110367892901,"#FF5B3B"],[0.80267558528427863,"#FF5A3A"],[0.80602006688963379,"#FF5939"],[0.8093645484949834,"#FF5938"],[0.81270903010033291,"#FF5837"],[0.81605351170568807,"#FF5737"],[0.81939799331103769,"#FF5636"],[0.8227424749163873,"#FF5535"],[0.82608695652173691,"#FF5434"],[0.82943143812709208,"#FF5333"],[0.83277591973244169,"#FF5232"],[0.83612040133779131,"#FF5132"],[0.83946488294314092,"#FF5031"],[0.84280936454849609,"#FF4F30"],[0.8461538461538457,"#FF4E2F"],[0.84949832775919532,"#FF4E2E"],[0.85284280936455048,"#FF4D2E"],[0.85618729096990009,"#FF4C2D"],[0.85953177257524971,"#FF4B2C"],[0.86287625418059932,"#FF4A2B"],[0.86622073578595449,"#FF492A"],[0.8695652173913041,"#FF4829"],[0.87290969899665372,"#FF4629"],[0.87625418060200888,"#FF4528"],[0.87959866220735849,"#FF4427"],[0.88294314381270811,"#FF4326"],[0.88628762541805772,"#FF4225"],[0.88963210702341289,"#FF4124"],[0.8929765886287625,"#FF4023"],[0.89632107023411212,"#FF3F23"],[0.89966555183946728,"#FF3E22"],[0.9030100334448169,"#FF3D21"],[0.90635451505016651,"#FF3B20"],[0.90969899665551612,"#FF3A1F"],[0.91304347826087129,"#FF391E"],[0.9163879598662209,"#FF381D"],[0.91973244147157052,"#FF361C"],[0.92307692307692568,"#FF351B"],[0.9264214046822753,"#FF341A"],[0.92976588628762491,"#FF3219"],[0.93311036789297452,"#FF3118"],[0.93645484949832969,"#FF3017"],[0.93979933110367919,"#FF2E16"],[0.94314381270902881,"#FF2D15"],[0.94648829431438397,"#FF2B14"],[0.94983277591973359,"#FF2A13"],[0.9531772575250832,"#FF2812"],[0.95652173913043281,"#FF2611"],[0.95986622073578798,"#FF2410"],[0.96321070234113759,"#FF230F"],[0.96655518394648721,"#FF210D"],[0.96989966555183682,"#FF1F0C"],[0.97324414715719199,"#FF1C0B"],[0.9765886287625416,"#FF1A09"],[0.97993311036789121,"#FF1708"],[0.98327759197324638,"#FF1506"],[0.98662207357859599,"#FF1205"],[0.98996655518394561,"#FF0E04"],[0.99331103678929522,"#FF0A02"],[0.99665551839465039,"#FF0501"],[1,"#FF0000"]],"colorbar":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"thickness":23.039999999999996,"title":"Disease Rate","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"tickmode":"array","ticktext":["1.00","1.01","1.02","1.03","1.04"],"tickvals":[0.0016666666666666668,0.2508333333333333,0.49999999999999994,0.74916666666666665,0.99833333333333329],"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"ticklen":2,"len":0.5}},"xaxis":"x","yaxis":"y","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":45.027626588318654,"l":43.105022831050235},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Disease Incidence by Age and Blood Pressure Category","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,5.5999999999999996],"tickmode":"array","ticktext":["30-40","40-50","50-60","60-70","70-80"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["30-40","40-50","50-60","60-70","70-80"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-45,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Age Groups","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,6.5999999999999996],"tickmode":"array","ticktext":["0","20","40","60","80","100"],"tickvals":[1,2,3,3.9999999999999996,5,6],"categoryorder":"array","categoryarray":["0","20","40","60","80","100"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"BP Category","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Disease Rate","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"13bd67e1ac32":{"x":{},"y":{},"fill":{},"type":"heatmap"},"13bd10f03be6":{"x":{},"y":{},"fill":{},"label":{}}},"cur_data":"13bd67e1ac32","visdat":{"13bd67e1ac32":["function (y) ","x"],"13bd10f03be6":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>We observed that disease incidence increased significantly with
+higher blood pressure, particularly in individuals aged 60 and above.
+Younger age groups (30-40) showed low disease incidence even at higher
+blood pressure levels, while middle-aged and older groups demonstrated
+steeper increases. The largest sample sizes were concentrated in
+moderate blood pressure categories (BP=40-60).</p>
+<p><br></p>
+</div>
+<div id="income-and-diet-quality" class="section level3">
+<h3>Income and Diet Quality</h3>
+<pre class="r"><code>color_palette &lt;- colorRampPalette(c(&quot;lightblue&quot;, &quot;darkblue&quot;))(length(unique(ukb_data$diet_quality)))
+
+figure_4 &lt;- ukb_data %&gt;%
+  filter(!is.na(income) &amp; !is.na(diet_quality)) %&gt;%
+  ggplot(aes(x = as.factor(income), fill = as.factor(diet_quality))) +
+  geom_bar(position = &quot;stack&quot;) +
+  theme_minimal() +
+  scale_fill_manual(values = color_palette) +
+  labs(x = &quot;Income Levels&quot;,
+       y = &quot;Count&quot;,
+       fill = &quot;Diet Quality&quot;,
+       title = &quot;Income vs Diet Quality&quot;) +
+  theme(legend.position = &quot;bottom&quot;)
+
+ggplotly(figure_4)</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-67b20cfc1dafa423d371" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-67b20cfc1dafa423d371">{"x":{"data":[{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036],"base":[39572,16627,76646,86784,89339,70189,18810],"x":[1,2,3,4,5,6,7],"y":[1272,743,3326,3090,3116,2094,439],"text":["count:  1272<br />as.factor(income): 1<br />as.factor(diet_quality): 0","count:   743<br />as.factor(income): 2<br />as.factor(diet_quality): 0","count:  3326<br />as.factor(income): 3<br />as.factor(diet_quality): 0","count:  3090<br />as.factor(income): 4<br />as.factor(diet_quality): 0","count:  3116<br />as.factor(income): 5<br />as.factor(diet_quality): 0","count:  2094<br />as.factor(income): 6<br />as.factor(diet_quality): 0","count:   439<br />as.factor(income): 7<br />as.factor(diet_quality): 0"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(173,216,230,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"0","legendgroup":"0","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036],"base":[35189,14363,66780,77074,79573,63334,17326],"x":[1,2,3,4,5,6,7],"y":[4383,2264,9866,9710,9766,6855,1484],"text":["count:  4383<br />as.factor(income): 1<br />as.factor(diet_quality): 1","count:  2264<br />as.factor(income): 2<br />as.factor(diet_quality): 1","count:  9866<br />as.factor(income): 3<br />as.factor(diet_quality): 1","count:  9710<br />as.factor(income): 4<br />as.factor(diet_quality): 1","count:  9766<br />as.factor(income): 5<br />as.factor(diet_quality): 1","count:  6855<br />as.factor(income): 6<br />as.factor(diet_quality): 1","count:  1484<br />as.factor(income): 7<br />as.factor(diet_quality): 1"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(148,185,217,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"1","legendgroup":"1","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036],"base":[27959,10861,51473,61116,63428,51222,14361],"x":[1,2,3,4,5,6,7],"y":[7230,3502,15307,15958,16145,12112,2965],"text":["count:  7230<br />as.factor(income): 1<br />as.factor(diet_quality): 2","count:  3502<br />as.factor(income): 2<br />as.factor(diet_quality): 2","count: 15307<br />as.factor(income): 3<br />as.factor(diet_quality): 2","count: 15958<br />as.factor(income): 4<br />as.factor(diet_quality): 2","count: 16145<br />as.factor(income): 5<br />as.factor(diet_quality): 2","count: 12112<br />as.factor(income): 6<br />as.factor(diet_quality): 2","count:  2965<br />as.factor(income): 7<br />as.factor(diet_quality): 2"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(123,154,204,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"2","legendgroup":"2","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036],"base":[18759,7118,34038,41249,42881,34766,9867],"x":[1,2,3,4,5,6,7],"y":[9200,3743,17435,19867,20547,16456,4494],"text":["count:  9200<br />as.factor(income): 1<br />as.factor(diet_quality): 3","count:  3743<br />as.factor(income): 2<br />as.factor(diet_quality): 3","count: 17435<br />as.factor(income): 3<br />as.factor(diet_quality): 3","count: 19867<br />as.factor(income): 4<br />as.factor(diet_quality): 3","count: 20547<br />as.factor(income): 5<br />as.factor(diet_quality): 3","count: 16456<br />as.factor(income): 6<br />as.factor(diet_quality): 3","count:  4494<br />as.factor(income): 7<br />as.factor(diet_quality): 3"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(98,123,191,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"3","legendgroup":"3","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036],"base":[9727,3570,17843,21502,22121,17893,5139],"x":[1,2,3,4,5,6,7],"y":[9032,3548,16195,19747,20760,16873,4728],"text":["count:  9032<br />as.factor(income): 1<br />as.factor(diet_quality): 4","count:  3548<br />as.factor(income): 2<br />as.factor(diet_quality): 4","count: 16195<br />as.factor(income): 3<br />as.factor(diet_quality): 4","count: 19747<br />as.factor(income): 4<br />as.factor(diet_quality): 4","count: 20760<br />as.factor(income): 5<br />as.factor(diet_quality): 4","count: 16873<br />as.factor(income): 6<br />as.factor(diet_quality): 4","count:  4728<br />as.factor(income): 7<br />as.factor(diet_quality): 4"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(74,92,178,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"4","legendgroup":"4","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036],"base":[3350,1164,6043,7140,7373,5821,1641],"x":[1,2,3,4,5,6,7],"y":[6377,2406,11800,14362,14748,12072,3498],"text":["count:  6377<br />as.factor(income): 1<br />as.factor(diet_quality): 5","count:  2406<br />as.factor(income): 2<br />as.factor(diet_quality): 5","count: 11800<br />as.factor(income): 3<br />as.factor(diet_quality): 5","count: 14362<br />as.factor(income): 4<br />as.factor(diet_quality): 5","count: 14748<br />as.factor(income): 5<br />as.factor(diet_quality): 5","count: 12072<br />as.factor(income): 6<br />as.factor(diet_quality): 5","count:  3498<br />as.factor(income): 7<br />as.factor(diet_quality): 5"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(49,61,164,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"5","legendgroup":"5","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036],"base":[431,158,820,891,947,729,215],"x":[1,2,3,4,5,6,7],"y":[2919,1006,5223,6249,6426,5092,1426],"text":["count:  2919<br />as.factor(income): 1<br />as.factor(diet_quality): 6","count:  1006<br />as.factor(income): 2<br />as.factor(diet_quality): 6","count:  5223<br />as.factor(income): 3<br />as.factor(diet_quality): 6","count:  6249<br />as.factor(income): 4<br />as.factor(diet_quality): 6","count:  6426<br />as.factor(income): 5<br />as.factor(diet_quality): 6","count:  5092<br />as.factor(income): 6<br />as.factor(diet_quality): 6","count:  1426<br />as.factor(income): 7<br />as.factor(diet_quality): 6"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(24,30,152,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"6","legendgroup":"6","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.89999999999999991,0.90000000000000013,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036,0.90000000000000036],"base":[0,0,0,0,0,0,0],"x":[1,2,3,4,5,6,7],"y":[431,158,820,891,947,729,215],"text":["count:   431<br />as.factor(income): 1<br />as.factor(diet_quality): 7","count:   158<br />as.factor(income): 2<br />as.factor(diet_quality): 7","count:   820<br />as.factor(income): 3<br />as.factor(diet_quality): 7","count:   891<br />as.factor(income): 4<br />as.factor(diet_quality): 7","count:   947<br />as.factor(income): 5<br />as.factor(diet_quality): 7","count:   729<br />as.factor(income): 6<br />as.factor(diet_quality): 7","count:   215<br />as.factor(income): 7<br />as.factor(diet_quality): 7"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(0,0,139,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"7","legendgroup":"7","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":40.182648401826498,"l":54.794520547945211},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Income vs Diet Quality","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,7.5999999999999996],"tickmode":"array","ticktext":["1","2","3","4","5","6","7"],"tickvals":[1,2,3,4.0000000000000009,5,6,7],"categoryorder":"array","categoryarray":["1","2","3","4","5","6","7"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Income Levels","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-4622.75,97077.75],"tickmode":"array","ticktext":["0","25000","50000","75000"],"tickvals":[0,25000,49999.999999999993,75000],"categoryorder":"array","categoryarray":["0","25000","50000","75000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Diet Quality","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"13bd6cdc08dd":{"x":{},"fill":{},"type":"bar"}},"cur_data":"13bd6cdc08dd","visdat":{"13bd6cdc08dd":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>Diet quality showed a positive correlation with income levels.
+Participants in the highest income bracket had the highest proportions
+of top diet quality, while those in the lowest income bracket exhibited
+the poorest diet quality. Middle-income groups displayed more balanced
+distributions.</p>
+<p><br></p>
+</div>
+<div id="sleep-duration-across-age-groups" class="section level3">
+<h3>Sleep Duration Across Age Groups</h3>
+<pre class="r"><code>figure_5 &lt;- ukb_data %&gt;% 
+  filter(!is.na(age) &amp; !is.na(sleep_hour)) %&gt;%
+  mutate(age_group = cut(age, breaks = seq(10, 100, by = 10), right = FALSE, 
+                         labels = paste(seq(10, 90, by = 10), &quot;-&quot;, 
+                                        seq(19, 99, by = 10), sep = &quot;&quot;))) %&gt;%
+  ggplot(aes(x = age_group, y = sleep_hour, fill = age_group)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(x = &quot;Age Groups&quot;, 
+       y = &quot;Sleep Hours per Night&quot;,
+       title = &quot;Sleep Hours per Night by Age Groups&quot;,
+       fill = &quot;Age Groups&quot;) + 
+  scale_fill_manual(values = c(&quot;lightgreen&quot;, &quot;lightpink&quot;, &quot;lightblue&quot;, 
+                               &quot;lightcoral&quot;, &quot;lightgoldenrod&quot;))
+
+figure_5</code></pre>
+<p><img src="eda_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Sleep duration varied slightly by age. Younger participants (30-39)
+had the shortest median sleep duration and the highest prevalence of
+short sleep (&lt;6 hours). Older age groups (60-69, 70-79) displayed
+greater variability, with outliers on both ends of the sleep duration
+spectrum, suggesting more diverse sleep patterns in older adults.</p>
+<p><br></p>
+</div>
+<div id="exposure-variables-and-disease-outcomes"
+class="section level3">
+<h3>Exposure variables and disease outcomes</h3>
+<pre class="r"><code>quantiles &lt;- ukb_data %&gt;%
+  group_by(nafld_outcome) %&gt;%
+  filter(!is.na(b_lympho)) %&gt;%
+  summarize(
+    q25 = quantile(b_lympho, 0.25),
+    median = median(b_lympho),
+    q75 = quantile(b_lympho, 0.75))
+
+figure_14 &lt;- ukb_data %&gt;% 
+  group_by(nafld_outcome) %&gt;% 
+  filter(!is.na(b_lympho)) %&gt;% 
+  mutate(
+    lower_bound = quantile(b_lympho, 0.25) - 1.5 * IQR(b_lympho),
+    upper_bound = quantile(b_lympho, 0.75) + 1.5 * IQR(b_lympho)
+  ) %&gt;%
+  filter(b_lympho &gt;= lower_bound &amp; b_lympho &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = b_lympho, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;#BCBDDC&quot;, &quot;lightyellow&quot;), name = &quot;NAFLD Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Lymphocyte&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of b_lympho by NAFLD Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;#8A2BE2&quot;, &quot;#FDAE6B&quot;))
+
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(nafld_outcome) %&gt;%
+  filter(!is.na(b_mono)) %&gt;%
+  summarize(
+    q25 = quantile(b_mono, 0.25),
+    median = median(b_mono),
+    q75 = quantile(b_mono, 0.75)
+  )
+
+figure_15 &lt;-ukb_data %&gt;% 
+  group_by(nafld_outcome) %&gt;% 
+  filter(!is.na(b_mono)) %&gt;% 
+  mutate(
+    lower_bound = quantile(b_mono, 0.25) - 1.5 * IQR(b_mono),
+    upper_bound = quantile(b_mono, 0.75) + 1.5 * IQR(b_mono)
+  ) %&gt;%
+  filter(b_mono &gt;= lower_bound &amp; b_mono &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = b_mono, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;#BCBDDC&quot;, &quot;lightyellow&quot;), name = &quot;NAFLD Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Monocytes&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of b_mono by NAFLD Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;#8A2BE2&quot;, &quot;#FDAE6B&quot;))
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(nafld_outcome) %&gt;%
+  filter(!is.na(b_neutro)) %&gt;%
+  summarize(
+    q25 = quantile(b_neutro, 0.25),
+    median = median(b_neutro),
+    q75 = quantile(b_neutro, 0.75)
+  )
+
+figure_16 &lt;- ukb_data %&gt;% 
+  group_by(nafld_outcome) %&gt;% 
+  filter(!is.na(b_neutro)) %&gt;% 
+  mutate(
+    lower_bound = quantile(b_neutro, 0.25) - 1.5 * IQR(b_neutro),
+    upper_bound = quantile(b_neutro, 0.75) + 1.5 * IQR(b_neutro)
+  ) %&gt;%
+  filter(b_neutro &gt;= lower_bound &amp; b_neutro &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = b_neutro, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;#BCBDDC&quot;, &quot;lightyellow&quot;), name = &quot;NAFLD Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Neutrophils&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of b_neutro by NAFLD Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;#8A2BE2&quot;, &quot;#FDAE6B&quot;))
+
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(nafld_outcome) %&gt;%
+  filter(!is.na(b_plate)) %&gt;%
+  summarize(
+    q25 = quantile(b_plate, 0.25),
+    median = median(b_plate),
+    q75 = quantile(b_plate, 0.75)
+  )
+
+figure_17 &lt;- ukb_data %&gt;% 
+  group_by(nafld_outcome) %&gt;% 
+  filter(!is.na(b_plate)) %&gt;% 
+  mutate(
+    lower_bound = quantile(b_plate, 0.25) - 1.5 * IQR(b_plate),
+    upper_bound = quantile(b_plate, 0.75) + 1.5 * IQR(b_plate)
+  ) %&gt;%
+  filter(b_plate &gt;= lower_bound &amp; b_plate &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = b_plate, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;#BCBDDC&quot;, &quot;lightyellow&quot;), name = &quot;NAFLD Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Platelets&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of b_plate by NAFLD Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;#8A2BE2&quot;, &quot;#FDAE6B&quot;))
+
+grid.arrange(figure_14, figure_15, figure_16, figure_17, nrow = 2, ncol = 2)</code></pre>
+<p><img src="eda_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>For the continuous biomarkers (LMR, SII, and NPAR), values are
+consistently lower in the NAFLD group compared to the Healthy group,
+indicating a complex immune-inflammatory profile in NAFLD pathogenesis.
+Lower LMR reflects immune imbalance, potentially favoring innate over
+adaptive immunity, while decreased SII suggests a unique inflammatory
+response with possible compensatory mechanisms. Similarly, lower NPAR in
+NAFLD may indicate early changes in liver function and neutrophil
+activity. Despite these differences, the close median values and
+significant distribution overlap suggest limited discriminative power
+for these biomarkers alone in distinguishing NAFLD from healthy
+individuals. The NPS distribution shows higher proportions of healthy
+individuals across all scores, particularly in lower-risk categories
+(0-1), highlighting that while NAFLD alters immune-inflammatory
+profiles, this does not necessarily translate into higher prognostic
+risks.</p>
+<p><br></p>
+<pre class="r"><code>quantiles &lt;- ukb_data %&gt;%
+  group_by(cirrho_outcome) %&gt;%
+  filter(!is.na(b_lympho)) %&gt;%
+  summarize(
+    q25 = quantile(b_lympho, 0.25),
+    median = median(b_lympho),
+    q75 = quantile(b_lympho, 0.75))
+
+figure_18 &lt;- ukb_data %&gt;% 
+  group_by(cirrho_outcome) %&gt;% 
+  filter(!is.na(b_lympho)) %&gt;% 
+  mutate(
+    lower_bound = quantile(b_lympho, 0.25) - 1.5 * IQR(b_lympho),
+    upper_bound = quantile(b_lympho, 0.75) + 1.5 * IQR(b_lympho)
+  ) %&gt;%
+  filter(b_lympho &gt;= lower_bound &amp; b_lympho &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = b_lympho, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;#BCBDDC&quot;, &quot;lightyellow&quot;), name = &quot;Cirrhosis Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Lymphocyte&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of b_lympho by Cirrhosis Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;#8A2BE2&quot;, &quot;#FDAE6B&quot;))
+
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(cirrho_outcome) %&gt;%
+  filter(!is.na(b_mono)) %&gt;%
+  summarize(
+    q25 = quantile(b_mono, 0.25),
+    median = median(b_mono),
+    q75 = quantile(b_mono, 0.75)
+  )
+
+figure_19 &lt;-ukb_data %&gt;% 
+  group_by(cirrho_outcome) %&gt;% 
+  filter(!is.na(b_mono)) %&gt;% 
+  mutate(
+    lower_bound = quantile(b_mono, 0.25) - 1.5 * IQR(b_mono),
+    upper_bound = quantile(b_mono, 0.75) + 1.5 * IQR(b_mono)
+  ) %&gt;%
+  filter(b_mono &gt;= lower_bound &amp; b_mono &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = b_mono, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;#BCBDDC&quot;, &quot;lightyellow&quot;), name = &quot;Cirrhosis Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Monocytes&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of b_mono by Cirrhosis Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;#8A2BE2&quot;, &quot;#FDAE6B&quot;))
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(cirrho_outcome) %&gt;%
+  filter(!is.na(b_neutro)) %&gt;%
+  summarize(
+    q25 = quantile(b_neutro, 0.25),
+    median = median(b_neutro),
+    q75 = quantile(b_neutro, 0.75)
+  )
+
+figure_20 &lt;- ukb_data %&gt;% 
+  group_by(cirrho_outcome) %&gt;% 
+  filter(!is.na(b_neutro)) %&gt;% 
+  mutate(
+    lower_bound = quantile(b_neutro, 0.25) - 1.5 * IQR(b_neutro),
+    upper_bound = quantile(b_neutro, 0.75) + 1.5 * IQR(b_neutro)
+  ) %&gt;%
+  filter(b_neutro &gt;= lower_bound &amp; b_neutro &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = b_neutro, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;#BCBDDC&quot;, &quot;lightyellow&quot;), name = &quot;Cirrhosis Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Neutrophils&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of b_neutro by Cirrhosis Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;#8A2BE2&quot;, &quot;#FDAE6B&quot;))
+
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(cirrho_outcome) %&gt;%
+  filter(!is.na(b_plate)) %&gt;%
+  summarize(
+    q25 = quantile(b_plate, 0.25),
+    median = median(b_plate),
+    q75 = quantile(b_plate, 0.75)
+  )
+
+figure_21 &lt;- ukb_data %&gt;% 
+  group_by(cirrho_outcome) %&gt;% 
+  filter(!is.na(b_plate)) %&gt;% 
+  mutate(
+    lower_bound = quantile(b_plate, 0.25) - 1.5 * IQR(b_plate),
+    upper_bound = quantile(b_plate, 0.75) + 1.5 * IQR(b_plate)
+  ) %&gt;%
+  filter(b_plate &gt;= lower_bound &amp; b_plate &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = b_plate, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;#BCBDDC&quot;, &quot;lightyellow&quot;), name = &quot;Cirrhosis Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Platelets&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of b_plate by Cirrhosis Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;#8A2BE2&quot;, &quot;#FDAE6B&quot;))
+
+grid.arrange(figure_18, figure_19, figure_20, figure_21, nrow = 2, ncol = 2)</code></pre>
+<p><img src="eda_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>For the Cirrhosis group, distinct differences are observed compared
+to the Healthy group: LMR and SII are lower in cirrhosis, reflecting
+immune dysregulation and potential immune exhaustion, while NPAR is
+elevated, indicating impaired liver function. This pattern suggests a
+shift from balanced immune and inflammatory responses in healthy
+individuals to a dysregulated state in cirrhosis. Despite these
+differences, the distribution overlap between the groups indicates some
+shared characteristics. The NPS distribution further highlights the
+contrast, with minimal representation of cirrhosis cases across risk
+categories, indicating that these immune-inflammatory changes do not
+strongly impact NPS scores in cirrhosis.</p>
+<p><br></p>
+</div>
+<div id="blood-parameters-and-disease-outcomes" class="section level3">
+<h3>Blood parameters and disease outcomes</h3>
+<pre class="r"><code>quantiles &lt;- ukb_data %&gt;%
+  group_by(nafld_outcome) %&gt;%
+  filter(!is.na(expo_lmr)) %&gt;%
+  summarize(
+    q25 = quantile(expo_lmr, 0.25),
+    median = median(expo_lmr),
+    q75 = quantile(expo_lmr, 0.75))
+
+figure_6 &lt;- ukb_data %&gt;% 
+  group_by(nafld_outcome) %&gt;% 
+  filter(!is.na(expo_lmr)) %&gt;% 
+  mutate(
+    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
+    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
+  ) %&gt;%
+  filter(expo_lmr &gt;= lower_bound &amp; expo_lmr &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = expo_lmr, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;), name = &quot;NAFLD Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Lymphocyte-to-Monocyte Ratio (LMR)&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of expo_lmr by NAFLD Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;dodgerblue&quot;, &quot;coral&quot;))
+
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(nafld_outcome) %&gt;%
+  filter(!is.na(expo_sii)) %&gt;%
+  summarize(
+    q25 = quantile(expo_sii, 0.25),
+    median = median(expo_sii),
+    q75 = quantile(expo_sii, 0.75)
+  )
+
+figure_7 &lt;-ukb_data %&gt;% 
+  group_by(nafld_outcome) %&gt;% 
+  filter(!is.na(expo_sii)) %&gt;% 
+  mutate(
+    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
+    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
+  ) %&gt;%
+  filter(expo_sii &gt;= lower_bound &amp; expo_sii &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = expo_sii, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;), name = &quot;NAFLD Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Systemic Immune-Inflammation Index (SII)&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of expo_sii by NAFLD Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;dodgerblue&quot;, &quot;coral&quot;))
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(nafld_outcome) %&gt;%
+  filter(!is.na(expo_npar)) %&gt;%
+  summarize(
+    q25 = quantile(expo_npar, 0.25),
+    median = median(expo_npar),
+    q75 = quantile(expo_npar, 0.75)
+  )
+
+figure_8 &lt;-ukb_data %&gt;% 
+  group_by(nafld_outcome) %&gt;% 
+  filter(!is.na(expo_npar)) %&gt;% 
+  mutate(
+    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
+    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
+  ) %&gt;%
+  filter(expo_npar &gt;= lower_bound &amp; expo_npar &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = expo_npar, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;), name = &quot;NAFLD Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Neutrophil-to-Albumin Ratio (NPAR)&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of expo_npar by NAFLD Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;dodgerblue&quot;, &quot;coral&quot;))
+
+
+figure_9 &lt;-ukb_data %&gt;% 
+  filter(!is.na(expo_nps)) %&gt;% 
+  group_by(nafld_outcome, expo_nps) %&gt;% 
+  summarize(count = n()) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(total_count = sum(count), 
+         percentage = count / total_count * 100) %&gt;%  
+  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(nafld_outcome))) +
+  geom_bar(stat = &quot;identity&quot;, position = position_dodge(width = 0.9), alpha = 0.8) +  
+  geom_text(aes(label = paste0(round(percentage, 1), &quot;%&quot;)),  
+            position = position_dodge(width = 0.9), vjust = 0.75, size = 3) + 
+  scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;), name = &quot;NAFLD Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Naples Prognostic Score (NPS)&quot;,
+    y = &quot;Percentage of Total Population&quot;,
+    title = &quot;Percentage of Total Population by NPS and NAFLD Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) 
+
+grid.arrange(figure_6, figure_7, figure_8, figure_9, nrow = 2, ncol = 2)</code></pre>
+<p><img src="eda_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>For blood cell parameters (lymphocytes, monocytes, neutrophils, and
+platelets), the Healthy group consistently shows higher counts than the
+NAFLD group, reflecting preserved immune and hematopoietic function.
+Lower counts in NAFLD suggest a general depression of immune capacity
+and altered hematopoiesis associated with the disease. Despite this, the
+significant overlap in distributions suggests that individual blood cell
+counts alone may not serve as reliable diagnostic markers for NAFLD.</p>
+<p><br></p>
+<pre class="r"><code>quantiles &lt;- ukb_data %&gt;%
+  group_by(cirrho_outcome) %&gt;%
+  filter(!is.na(expo_lmr)) %&gt;%
+  summarize(
+    q25 = quantile(expo_lmr, 0.25),
+    median = median(expo_lmr),
+    q75 = quantile(expo_lmr, 0.75))
+
+figure_10 &lt;- ukb_data %&gt;% 
+  group_by(cirrho_outcome) %&gt;% 
+  filter(!is.na(expo_lmr)) %&gt;% 
+  mutate(
+    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
+    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
+  ) %&gt;%
+  filter(expo_lmr &gt;= lower_bound &amp; expo_lmr &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = expo_lmr, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;), name = &quot;Cirrhosis Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Lymphocyte-to-Monocyte Ratio (LMR)&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of expo_lmr by Cirrhosis Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;dodgerblue&quot;, &quot;coral&quot;))
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(cirrho_outcome) %&gt;%
+  filter(!is.na(expo_sii)) %&gt;%
+  summarize(
+    q25 = quantile(expo_sii, 0.25),
+    median = median(expo_sii),
+    q75 = quantile(expo_sii, 0.75)
+  )
+
+figure_11 &lt;- ukb_data %&gt;% 
+  group_by(cirrho_outcome) %&gt;% 
+  filter(!is.na(expo_sii)) %&gt;% 
+  mutate(
+    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
+    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
+  ) %&gt;%
+  filter(expo_sii &gt;= lower_bound &amp; expo_sii &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = expo_sii, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;), name = &quot;Cirrhosis Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Systemic Immune-Inflammation Index (SII)&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of expo_sii by Cirrhosis Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;dodgerblue&quot;, &quot;coral&quot;))
+
+quantiles &lt;- ukb_data %&gt;%
+  group_by(cirrho_outcome) %&gt;%
+  filter(!is.na(expo_npar)) %&gt;%
+  summarize(
+    q25 = quantile(expo_npar, 0.25),
+    median = median(expo_npar),
+    q75 = quantile(expo_npar, 0.75)
+  )
+
+figure_12 &lt;- ukb_data %&gt;% 
+  group_by(cirrho_outcome) %&gt;% 
+  filter(!is.na(expo_npar)) %&gt;% 
+  mutate(
+    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
+    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
+  ) %&gt;%
+  filter(expo_npar &gt;= lower_bound &amp; expo_npar &lt;= upper_bound) %&gt;% 
+  ggplot(aes(x = expo_npar, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;), name = &quot;Cirrhosis Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Neutrophil-to-Albumin Ratio (NPAR)&quot;,
+    y = &quot;Density&quot;,
+    title = &quot;Density Plot of expo_npar by Cirrhosis Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;solid&quot;, size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = &quot;dashed&quot;, size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c(&quot;dodgerblue&quot;, &quot;coral&quot;))
+
+figure_13 &lt;- ukb_data %&gt;% 
+  filter(!is.na(expo_nps)) %&gt;% 
+  group_by(cirrho_outcome, expo_nps) %&gt;% 
+  summarize(count = n()) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(total_count = sum(count), 
+         percentage = count / total_count * 100) %&gt;%  
+  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(cirrho_outcome))) +
+  geom_bar(stat = &quot;identity&quot;, position = position_dodge(width = 0.9), alpha = 0.8) +  
+  geom_text(aes(label = paste0(round(percentage, 1), &quot;%&quot;)),  
+            position = position_dodge(width = 0.9), vjust = 0.5, size = 3) + 
+  scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;), name = &quot;Cirrhosis Outcome&quot;, 
+                    labels = c(&quot;Healthy&quot;, &quot;Disease&quot;)) +
+  labs(
+    x = &quot;Naples Prognostic Score (NPS)&quot;,
+    y = &quot;Percentage of Total Population&quot;,
+    title = &quot;Percentage of Total Population by NPS and Cirrhosis Outcome&quot;
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = &quot;bottom&quot;,               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, &quot;cm&quot;)
+  ) 
+
+grid.arrange(figure_10, figure_11, figure_12, figure_13, nrow = 2, ncol = 2)</code></pre>
+<p><img src="eda_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>For these blood parameters, the Healthy group shows generally higher
+distribution values compared to the Cirrhosis group. Looking at the
+specific median lines, lymphocytes show almost identical median values
+between healthy and cirrhosis groups, while monocytes and neutrophils
+demonstrate higher median values in the cirrhosis group compared to
+healthy individuals, suggesting increased innate immune cell activation
+in liver disease. In contrast, platelets show a notably higher median in
+the healthy group compared to cirrhosis, with the most pronounced
+difference among all parameters, likely reflecting the impact of portal
+hypertension and possible splenic sequestration in cirrhosis. Despite
+the similar lymphocyte medians, the overall distribution reveals
+generally higher lymphocyte values in healthy individuals, indicating
+better preserved adaptive immunity. Distribution overlaps exist between
+groups across all parameters, though the platelet parameter shows the
+clearest separation between healthy and cirrhosis populations.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
