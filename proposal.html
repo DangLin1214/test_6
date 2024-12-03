@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Proposal</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="proposal.html">Proposal</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="introduction.html">Introduction</a>
+</li>
+<li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="eda.html">EDA</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
+<li>
+  <a href="appendix.html">Appendix</a>
+</li>
+<li>
+  <a href="mailto:&lt;dl3757@cumc.columbia.edu&gt;">
+    <span class="fa fa-play-circle fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="mailto:&lt;dl3757@cumc.columbia.edu&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/DangLin1214/test4.github.io.git">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Proposal</h1>
+
+</div>
+
+
+<div id="group-members" class="section level3">
+<h3>Group Members</h3>
+<p>Zicheng Wang (zw3088), Xiaohui Kang (xk2163), Mengyuan Chen (mc5698),
+Shuai yuan (sy3270), Dang Lin (dl3757)</p>
+<p><br></p>
+</div>
+<div id="tentative-project-title" class="section level3">
+<h3>Tentative Project Title</h3>
+<p>Exploring the Role of Inflammatory Biomarkers in Predicting Mortality
+Risks Among UK Adults with Fatty Liver or Cirrhosis, Using Evidence from
+UKB Data</p>
+<p><br></p>
+</div>
+<div id="motivation" class="section level3">
+<h3>Motivation</h3>
+<p>Chronic diseases like non-alcoholic fatty liver disease (NAFLD),
+metabolic-associated fatty liver disease (MAFLD), and
+metabolic-associated steatohepatitis-related liver disease (MASLD) are
+becoming increasingly common and can progress to cirrhosis, liver
+failure, or hepatocellular carcinoma. These conditions are closely tied
+to systemic inflammation and immune dysregulation, making it essential
+to identify reliable, non-invasive biomarkers that can predict disease
+progression and provide insights into the underlying mechanisms. Such
+biomarkers could improve early detection, guide interventions, and
+support better clinical outcomes.</p>
+<p>Immune-related indices like the Lymphocyte-to-Monocyte Ratio (LMR),
+Systemic Immune-Inflammation Index (SII), Naples Prognostic Score (NPS),
+and Neutrophil-Percentage-to-Albumin Ratio (NPAR) have gained attention
+for their potential utility in assessing inflammation and immune
+responses. These indices are derived from routine blood tests, making
+them accessible and cost-effective. LMR, for instance, measures the
+balance between lymphocytes, which are linked to immune surveillance and
+anti-inflammatory responses, and monocytes, which are associated with
+inflammation and tissue damage. SII integrates neutrophil, platelet, and
+lymphocyte counts to provide a comprehensive view of immune activity and
+thrombosis risk. NPS combines multiple prognostic factors, including
+inflammatory markers, albumin levels, and platelet counts, offering a
+broader perspective on patient health. NPAR evaluates the relationship
+between neutrophil percentages and albumin levels, connecting immune
+function with nutritional status.</p>
+<p>The UK Biobank (UKB) dataset is well-suited for studying the
+relationships between these immune markers and chronic disease outcomes.
+With its extensive biomarker, demographic, and longitudinal health data
+on a representative UK population, the UKB provides an opportunity for
+detailed cross-sectional and longitudinal analyses. These analyses could
+help clarify how inflammation and immune stress contribute to chronic
+disease progression, ultimately advancing both clinical and public
+health approaches.</p>
+<p><br></p>
+</div>
+<div id="exposure-variables" class="section level3">
+<h3>Exposure Variables</h3>
+<p><strong>Lymphocyte-to-Monocyte Ratio (LMR):</strong> <span
+class="math display">\[\text{LMR} = \frac{\text{Absolute Lymphocyte
+Count}}{\text{Absolute Monocyte Count}}\]</span></p>
+<p><strong>Systemic Immune-Inflammation Index (SII):</strong> <span
+class="math display">\[\text{SII} = \frac{\text{Neutrophil Count} \times
+\text{Platelet Count}}{\text{Lymphocyte Count}}\]</span></p>
+<p><strong>Naples Prognostic Score (NPS):</strong> This score is based
+on a combination of factors, typically including:</p>
+<ul>
+<li>Albumin level (&lt;4 g/dL = 1 point).</li>
+<li>Neutrophil-to-Lymphocyte Ratio (NLR) (&gt;3 = 1 point).</li>
+<li>Lymphocyte-to-Monocyte Ratio (LMR) (&lt;4.44 = 1 point).</li>
+<li>Platelet-to-Lymphocyte Ratio (PLR) (&gt;150 = 1 point).</li>
+</ul>
+<p>The final NPS is the sum of these points (range: 0–4).</p>
+<p><strong>Neutrophil-Percentage-to-Albumin Ratio (NPAR):</strong> <span
+class="math display">\[\text{NPAR} = \frac{\text{Neutrophil
+Percentage}}{\text{Albumin Level (g/dL)}}\]</span></p>
+<p><br></p>
+</div>
+<div id="intended-final-products" class="section level3">
+<h3>Intended Final Products</h3>
+<ol style="list-style-type: decimal">
+<li>Exploratory Data Analysis: Descriptive statistics and visualizations
+of inflammatory biomarkers (e.g., LMR, SII, NPAR) across demographic
+groups (e.g., age, alcohol consumption, smoking status). </li>
+<li>Survival Analysis: Modeling mortality outcomes in individuals with
+fatty liver disease and cirrhosis, assessing the predictive power of
+inflammatory biomarkers. We plan to include a cohort study design where
+survival outcomes are calculated for each individual starting from the
+time they enter the cohort. Survival at 1, 3, 5, and 7 years will be
+assessed to explore long-term outcomes. We will use a multivariable
+logistic regression model to evaluate the associations between
+inflammatory biomarkers and survival outcomes. This addition will
+enhance the longitudinal scope of our analysis and provide deeper
+insights into the predictive power of these indices for mortality risks.
+</li>
+<li>Predictive Modeling and ROC Analysis: Use ROC curves and Net
+Reclassification Improvement (NRI) to evaluate the predictive effect of
+each biomarker index.</li>
+</ol>
+<p><br></p>
+</div>
+<div id="anticipated-data-sources" class="section level3">
+<h3>Anticipated Data Sources</h3>
+<p>The UK Biobank (UKB) dataset, which includes: - Biomarker Data:
+Relevant indices such as LMR, SII, NPAR, etc. - Demographics: Age,
+gender, ethnicity, socioeconomic status, etc. - Health Outcomes:
+Mortality data, disease diagnoses, metabolic syndrome indicators, and
+more.</p>
+<p><br></p>
+</div>
+<div id="planned-analyses-visualizations" class="section level3">
+<h3>Planned Analyses/ Visualizations</h3>
+<ol style="list-style-type: decimal">
+<li>Exploratory Data Analysis:</li>
+</ol>
+<ul>
+<li>Distribution of inflammatory biomarkers by demographic factors (age,
+gender, socioeconomic status) using visualizations like histograms,
+boxplots, and heatmaps.</li>
+<li>Correlation analysis between biomarkers and other
+demographic/clinical variables.</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Survival Analysis:</li>
+</ol>
+<ul>
+<li>Apply Cox proportional hazards models to explore associations
+between biomarkers and mortality in patients with liver disease or
+cirrhosis.</li>
+<li>Kaplan-Meier survival curves and subgroup analyses to investigate
+the role of each biomarker.</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li>Cross-sectional Analysis:</li>
+</ol>
+<ul>
+<li>Logistic regression to assess associations between inflammatory
+biomarkers and indicators of metabolic syndrome.</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Prediction and ROC Analysis:</li>
+</ol>
+<ul>
+<li>Assess predictive ability of biomarkers with ROC curves and NRI, and
+use weighted quantile sum regression to evaluate each factor’s
+contribution.</li>
+</ul>
+<p><br></p>
+</div>
+<div id="coding-challenges" class="section level3">
+<h3>Coding Challenges</h3>
+<p>Throughout the project, we anticipate addressing several coding
+challenges, including efficiently handling the large-scale UKB dataset,
+managing missing or inconsistent data, and implementing survival
+analysis and multivariable regression models in Python and R. Optimizing
+code for computational efficiency and ensuring reproducibility through
+clear documentation will be key priorities in overcoming these
+challenges.</p>
+<p><br></p>
+</div>
+<div id="planned-timeline" class="section level3">
+<h3>Planned Timeline</h3>
+<p>November 1-8: Data collection, cleaning, and preliminary exploration.
+</p>
+<p>November 9-15: Start survival and cross-sectional analyses on
+mortality and metabolic syndrome. </p>
+<p>November 16-25: Conduct analyses related to additional outcomes
+(e.g., kidney function) and refine survival models. </p>
+<p>November 26-30: Finalize all analyses and begin drafting the report.
+</p>
+<p>December 1-7: Complete the draft report with visualizations and
+interpretation. </p>
+<p>December 8-12: Review and finalize the project for submission.</p>
+<p><br></p>
+</div>
+<div id="project-structure" class="section level3">
+<h3>Project Structure</h3>
+<ol style="list-style-type: decimal">
+<li>Introduction: Background on the role of inflammatory biomarkers in
+chronic disease and the relevance of the UKB dataset. </li>
+<li>Data Cleaning and Exploration: Initial data processing, including
+distributions of biomarkers and demographic overviews. </li>
+<li>Association and Survival Analysis: In-depth statistical modeling and
+correlation analysis between biomarkers, mortality, and other health
+outcomes. </li>
+<li>Results and Discussion: Interpretations of key findings and
+implications for chronic disease management and public health. </li>
+<li>Recommendations: Suggestions for implementing these biomarkers in
+routine screenings and health policies. </li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
