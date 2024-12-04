@@ -8,7 +8,6 @@ output:
     code_folding: hide
 ---
 
-
 ```{r include = FALSE}
 library(tidyverse)
 library(haven)
@@ -194,6 +193,379 @@ Sleep duration varied slightly by age. Younger participants (30-39) had the shor
 <br> 
 
 ### Exposure variables and disease outcomes
+```{r message = FALSE, warning = FALSE}
+quantiles <- ukb_data %>%
+  group_by(nafld_outcome) %>%
+  filter(!is.na(expo_lmr)) %>%
+  summarize(
+    q25 = quantile(expo_lmr, 0.25),
+    median = median(expo_lmr),
+    q75 = quantile(expo_lmr, 0.75))
+
+figure_6 <- ukb_data %>% 
+  group_by(nafld_outcome) %>% 
+  filter(!is.na(expo_lmr)) %>% 
+  mutate(
+    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
+    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
+  ) %>%
+  filter(expo_lmr >= lower_bound & expo_lmr <= upper_bound) %>% 
+  ggplot(aes(x = expo_lmr, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Lymphocyte-to-Monocyte Ratio (LMR)",
+    y = "Density",
+    title = "Density Plot of expo_lmr by NAFLD Outcome"
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+
+quantiles <- ukb_data %>%
+  group_by(nafld_outcome) %>%
+  filter(!is.na(expo_sii)) %>%
+  summarize(
+    q25 = quantile(expo_sii, 0.25),
+    median = median(expo_sii),
+    q75 = quantile(expo_sii, 0.75)
+  )
+
+figure_7 <-ukb_data %>% 
+  group_by(nafld_outcome) %>% 
+  filter(!is.na(expo_sii)) %>% 
+  mutate(
+    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
+    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
+  ) %>%
+  filter(expo_sii >= lower_bound & expo_sii <= upper_bound) %>% 
+  ggplot(aes(x = expo_sii, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Systemic Immune-Inflammation Index (SII)",
+    y = "Density",
+    title = "Density Plot of expo_sii by NAFLD Outcome"
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+quantiles <- ukb_data %>%
+  group_by(nafld_outcome) %>%
+  filter(!is.na(expo_npar)) %>%
+  summarize(
+    q25 = quantile(expo_npar, 0.25),
+    median = median(expo_npar),
+    q75 = quantile(expo_npar, 0.75)
+  )
+
+figure_8 <-ukb_data %>% 
+  group_by(nafld_outcome) %>% 
+  filter(!is.na(expo_npar)) %>% 
+  mutate(
+    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
+    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
+  ) %>%
+  filter(expo_npar >= lower_bound & expo_npar <= upper_bound) %>% 
+  ggplot(aes(x = expo_npar, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Neutrophil-to-Albumin Ratio (NPAR)",
+    y = "Density",
+    title = "Density Plot of expo_npar by NAFLD Outcome"
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+
+figure_9 <-ukb_data %>% 
+  filter(!is.na(expo_nps)) %>% 
+  group_by(nafld_outcome, expo_nps) %>% 
+  summarize(count = n()) %>% 
+  ungroup() %>% 
+  mutate(total_count = sum(count), 
+         percentage = count / total_count * 100) %>%  
+  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(nafld_outcome))) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9), alpha = 0.8) +  
+  geom_text(aes(label = paste0(round(percentage, 1), "%")),  
+            position = position_dodge(width = 0.9), vjust = 0.75, size = 3) + 
+  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Naples Prognostic Score (NPS)",
+    y = "Percentage of Total Population",
+    title = "Percentage of Total Population by NPS and NAFLD Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) 
+
+grid.arrange(figure_6, figure_7, figure_8, figure_9, nrow = 2, ncol = 2)
+```
+
+For the continuous biomarkers (LMR, SII, and NPAR), the density plots show consistently lower concentrations of values in the NAFLD group compared to the Healthy group, indicating a complex immune-inflammatory profile in NAFLD pathogenesis. The lower density peaks in LMR reflect more dispersed immune balance patterns, while decreased density in SII suggests more variable inflammatory responses. Similarly, the broader distribution of NPAR in NAFLD may indicate more heterogeneous liver function and neutrophil activity patterns. The vertical lines in each density plot represent the quartiles (Q1=25th percentile, Q2=median, and Q3=75th percentile), providing a clear visualization of the data distribution. The close median values and significant distribution overlap suggest limited discriminative power for these biomarkers alone in distinguishing NAFLD from healthy individuals. The NPS distribution shows higher proportions of healthy individuals across all scores, particularly in lower-risk categories (0-1), highlighting that while NAFLD alters immune-inflammatory profiles, this does not necessarily translate into higher prognostic risks.
+
+<br>
+
+```{r message = FALSE, warning = FALSE}
+quantiles <- ukb_data %>%
+  group_by(cirrho_outcome) %>%
+  filter(!is.na(expo_lmr)) %>%
+  summarize(
+    q25 = quantile(expo_lmr, 0.25),
+    median = median(expo_lmr),
+    q75 = quantile(expo_lmr, 0.75))
+
+figure_10 <- ukb_data %>% 
+  group_by(cirrho_outcome) %>% 
+  filter(!is.na(expo_lmr)) %>% 
+  mutate(
+    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
+    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
+  ) %>%
+  filter(expo_lmr >= lower_bound & expo_lmr <= upper_bound) %>% 
+  ggplot(aes(x = expo_lmr, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Lymphocyte-to-Monocyte Ratio (LMR)",
+    y = "Density",
+    title = "Density Plot of expo_lmr by Cirrhosis Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+quantiles <- ukb_data %>%
+  group_by(cirrho_outcome) %>%
+  filter(!is.na(expo_sii)) %>%
+  summarize(
+    q25 = quantile(expo_sii, 0.25),
+    median = median(expo_sii),
+    q75 = quantile(expo_sii, 0.75)
+  )
+
+figure_11 <- ukb_data %>% 
+  group_by(cirrho_outcome) %>% 
+  filter(!is.na(expo_sii)) %>% 
+  mutate(
+    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
+    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
+  ) %>%
+  filter(expo_sii >= lower_bound & expo_sii <= upper_bound) %>% 
+  ggplot(aes(x = expo_sii, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Systemic Immune-Inflammation Index (SII)",
+    y = "Density",
+    title = "Density Plot of expo_sii by Cirrhosis Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+quantiles <- ukb_data %>%
+  group_by(cirrho_outcome) %>%
+  filter(!is.na(expo_npar)) %>%
+  summarize(
+    q25 = quantile(expo_npar, 0.25),
+    median = median(expo_npar),
+    q75 = quantile(expo_npar, 0.75)
+  )
+
+figure_12 <- ukb_data %>% 
+  group_by(cirrho_outcome) %>% 
+  filter(!is.na(expo_npar)) %>% 
+  mutate(
+    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
+    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
+  ) %>%
+  filter(expo_npar >= lower_bound & expo_npar <= upper_bound) %>% 
+  ggplot(aes(x = expo_npar, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Neutrophil-to-Albumin Ratio (NPAR)",
+    y = "Density",
+    title = "Density Plot of expo_npar by Cirrhosis Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+figure_13 <- ukb_data %>% 
+  filter(!is.na(expo_nps)) %>% 
+  group_by(cirrho_outcome, expo_nps) %>% 
+  summarize(count = n()) %>% 
+  ungroup() %>% 
+  mutate(total_count = sum(count), 
+         percentage = count / total_count * 100) %>%  
+  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(cirrho_outcome))) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9), alpha = 0.8) +  
+  geom_text(aes(label = paste0(round(percentage, 1), "%")),  
+            position = position_dodge(width = 0.9), vjust = 0.5, size = 3) + 
+  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Naples Prognostic Score (NPS)",
+    y = "Percentage of Total Population",
+    title = "Percentage of Total Population by NPS and Cirrhosis Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) 
+
+grid.arrange(figure_10, figure_11, figure_12, figure_13, nrow = 2, ncol = 2)
+```
+
+For the Cirrhosis group, the density plots reveal distinct distribution patterns compared to the Healthy group: LMR and SII show lower peak heights in cirrhosis, indicating more dispersed values and suggesting variable immune and inflammatory states, while NPAR shows shifted peak concentrations, reflecting altered liver function patterns. The height and shape of the density curves suggest more concentrated value distributions in healthy individuals for LMR and SII, indicating more consistent immune-inflammatory states in health. Though the overlapping areas between curves indicate some shared value ranges, the different peak heights and positions reflect distinct disease characteristics. The NPS distribution further emphasizes this contrast, with higher density concentrations in healthy individuals across risk categories.
+
+<br>
+
+### Blood parameters and disease outcomes
 ```{r message = FALSE, warning = FALSE}
 quantiles <- ukb_data %>%
   group_by(nafld_outcome) %>%
@@ -395,7 +767,7 @@ figure_17 <- ukb_data %>%
 grid.arrange(figure_14, figure_15, figure_16, figure_17, nrow = 2, ncol = 2)
 ```
 
-For the continuous biomarkers (LMR, SII, and NPAR), values are consistently lower in the NAFLD group compared to the Healthy group, indicating a complex immune-inflammatory profile in NAFLD pathogenesis. Lower LMR reflects immune imbalance, potentially favoring innate over adaptive immunity, while decreased SII suggests a unique inflammatory response with possible compensatory mechanisms. Similarly, lower NPAR in NAFLD may indicate early changes in liver function and neutrophil activity. Despite these differences, the close median values and significant distribution overlap suggest limited discriminative power for these biomarkers alone in distinguishing NAFLD from healthy individuals. The NPS distribution shows higher proportions of healthy individuals across all scores, particularly in lower-risk categories (0-1), highlighting that while NAFLD alters immune-inflammatory profiles, this does not necessarily translate into higher prognostic risks.
+For these blood parameters (lymphocytes, monocytes, neutrophils, and platelets), the density plots reveal distinct distribution patterns. The monocyte plot shows multiple sharp peaks, indicating distinct clustered values in both groups. Lymphocyte and neutrophil distributions show bell-shaped curves with considerable overlap but different peak heights, suggesting concentrated value ranges in both healthy and NAFLD states. Platelet distributions show broader, more spread-out patterns with similar shapes between groups, indicating more variable platelet counts in both populations. These density patterns suggest that while the value ranges overlap, the concentration of measurements differs between healthy and NAFLD states, with each parameter showing unique distribution characteristics.
 
 <br>
 
@@ -600,377 +972,4 @@ figure_21 <- ukb_data %>%
 grid.arrange(figure_18, figure_19, figure_20, figure_21, nrow = 2, ncol = 2)
 ```
 
-For the Cirrhosis group, distinct differences are observed compared to the Healthy group: LMR and SII are lower in cirrhosis, reflecting immune dysregulation and potential immune exhaustion, while NPAR is elevated, indicating impaired liver function. This pattern suggests a shift from balanced immune and inflammatory responses in healthy individuals to a dysregulated state in cirrhosis. Despite these differences, the distribution overlap between the groups indicates some shared characteristics. The NPS distribution further highlights the contrast, with minimal representation of cirrhosis cases across risk categories, indicating that these immune-inflammatory changes do not strongly impact NPS scores in cirrhosis.
-
-<br>
-
-### Blood parameters and disease outcomes
-```{r message = FALSE, warning = FALSE}
-quantiles <- ukb_data %>%
-  group_by(nafld_outcome) %>%
-  filter(!is.na(expo_lmr)) %>%
-  summarize(
-    q25 = quantile(expo_lmr, 0.25),
-    median = median(expo_lmr),
-    q75 = quantile(expo_lmr, 0.75))
-
-figure_6 <- ukb_data %>% 
-  group_by(nafld_outcome) %>% 
-  filter(!is.na(expo_lmr)) %>% 
-  mutate(
-    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
-    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
-  ) %>%
-  filter(expo_lmr >= lower_bound & expo_lmr <= upper_bound) %>% 
-  ggplot(aes(x = expo_lmr, fill = as.factor(nafld_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Lymphocyte-to-Monocyte Ratio (LMR)",
-    y = "Density",
-    title = "Density Plot of expo_lmr by NAFLD Outcome"
-  ) +
-  theme_minimal(base_size = 14) + 
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) +  
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-
-quantiles <- ukb_data %>%
-  group_by(nafld_outcome) %>%
-  filter(!is.na(expo_sii)) %>%
-  summarize(
-    q25 = quantile(expo_sii, 0.25),
-    median = median(expo_sii),
-    q75 = quantile(expo_sii, 0.75)
-  )
-
-figure_7 <-ukb_data %>% 
-  group_by(nafld_outcome) %>% 
-  filter(!is.na(expo_sii)) %>% 
-  mutate(
-    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
-    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
-  ) %>%
-  filter(expo_sii >= lower_bound & expo_sii <= upper_bound) %>% 
-  ggplot(aes(x = expo_sii, fill = as.factor(nafld_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Systemic Immune-Inflammation Index (SII)",
-    y = "Density",
-    title = "Density Plot of expo_sii by NAFLD Outcome"
-  ) +
-  theme_minimal(base_size = 14) + 
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) +  
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-quantiles <- ukb_data %>%
-  group_by(nafld_outcome) %>%
-  filter(!is.na(expo_npar)) %>%
-  summarize(
-    q25 = quantile(expo_npar, 0.25),
-    median = median(expo_npar),
-    q75 = quantile(expo_npar, 0.75)
-  )
-
-figure_8 <-ukb_data %>% 
-  group_by(nafld_outcome) %>% 
-  filter(!is.na(expo_npar)) %>% 
-  mutate(
-    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
-    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
-  ) %>%
-  filter(expo_npar >= lower_bound & expo_npar <= upper_bound) %>% 
-  ggplot(aes(x = expo_npar, fill = as.factor(nafld_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Neutrophil-to-Albumin Ratio (NPAR)",
-    y = "Density",
-    title = "Density Plot of expo_npar by NAFLD Outcome"
-  ) +
-  theme_minimal(base_size = 14) + 
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) +  
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-
-figure_9 <-ukb_data %>% 
-  filter(!is.na(expo_nps)) %>% 
-  group_by(nafld_outcome, expo_nps) %>% 
-  summarize(count = n()) %>% 
-  ungroup() %>% 
-  mutate(total_count = sum(count), 
-         percentage = count / total_count * 100) %>%  
-  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(nafld_outcome))) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.9), alpha = 0.8) +  
-  geom_text(aes(label = paste0(round(percentage, 1), "%")),  
-            position = position_dodge(width = 0.9), vjust = 0.75, size = 3) + 
-  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Naples Prognostic Score (NPS)",
-    y = "Percentage of Total Population",
-    title = "Percentage of Total Population by NPS and NAFLD Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) 
-
-grid.arrange(figure_6, figure_7, figure_8, figure_9, nrow = 2, ncol = 2)
-```
-
-For blood cell parameters (lymphocytes, monocytes, neutrophils, and platelets), the Healthy group consistently shows higher counts than the NAFLD group, reflecting preserved immune and hematopoietic function. Lower counts in NAFLD suggest a general depression of immune capacity and altered hematopoiesis associated with the disease. Despite this, the significant overlap in distributions suggests that individual blood cell counts alone may not serve as reliable diagnostic markers for NAFLD.
-
-<br>
-
-```{r message = FALSE, warning = FALSE}
-quantiles <- ukb_data %>%
-  group_by(cirrho_outcome) %>%
-  filter(!is.na(expo_lmr)) %>%
-  summarize(
-    q25 = quantile(expo_lmr, 0.25),
-    median = median(expo_lmr),
-    q75 = quantile(expo_lmr, 0.75))
-
-figure_10 <- ukb_data %>% 
-  group_by(cirrho_outcome) %>% 
-  filter(!is.na(expo_lmr)) %>% 
-  mutate(
-    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
-    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
-  ) %>%
-  filter(expo_lmr >= lower_bound & expo_lmr <= upper_bound) %>% 
-  ggplot(aes(x = expo_lmr, fill = as.factor(cirrho_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Lymphocyte-to-Monocyte Ratio (LMR)",
-    y = "Density",
-    title = "Density Plot of expo_lmr by Cirrhosis Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  )  + 
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-quantiles <- ukb_data %>%
-  group_by(cirrho_outcome) %>%
-  filter(!is.na(expo_sii)) %>%
-  summarize(
-    q25 = quantile(expo_sii, 0.25),
-    median = median(expo_sii),
-    q75 = quantile(expo_sii, 0.75)
-  )
-
-figure_11 <- ukb_data %>% 
-  group_by(cirrho_outcome) %>% 
-  filter(!is.na(expo_sii)) %>% 
-  mutate(
-    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
-    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
-  ) %>%
-  filter(expo_sii >= lower_bound & expo_sii <= upper_bound) %>% 
-  ggplot(aes(x = expo_sii, fill = as.factor(cirrho_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Systemic Immune-Inflammation Index (SII)",
-    y = "Density",
-    title = "Density Plot of expo_sii by Cirrhosis Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  )  + 
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-quantiles <- ukb_data %>%
-  group_by(cirrho_outcome) %>%
-  filter(!is.na(expo_npar)) %>%
-  summarize(
-    q25 = quantile(expo_npar, 0.25),
-    median = median(expo_npar),
-    q75 = quantile(expo_npar, 0.75)
-  )
-
-figure_12 <- ukb_data %>% 
-  group_by(cirrho_outcome) %>% 
-  filter(!is.na(expo_npar)) %>% 
-  mutate(
-    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
-    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
-  ) %>%
-  filter(expo_npar >= lower_bound & expo_npar <= upper_bound) %>% 
-  ggplot(aes(x = expo_npar, fill = as.factor(cirrho_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Neutrophil-to-Albumin Ratio (NPAR)",
-    y = "Density",
-    title = "Density Plot of expo_npar by Cirrhosis Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  )  + 
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-figure_13 <- ukb_data %>% 
-  filter(!is.na(expo_nps)) %>% 
-  group_by(cirrho_outcome, expo_nps) %>% 
-  summarize(count = n()) %>% 
-  ungroup() %>% 
-  mutate(total_count = sum(count), 
-         percentage = count / total_count * 100) %>%  
-  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(cirrho_outcome))) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.9), alpha = 0.8) +  
-  geom_text(aes(label = paste0(round(percentage, 1), "%")),  
-            position = position_dodge(width = 0.9), vjust = 0.5, size = 3) + 
-  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Naples Prognostic Score (NPS)",
-    y = "Percentage of Total Population",
-    title = "Percentage of Total Population by NPS and Cirrhosis Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) 
-
-grid.arrange(figure_10, figure_11, figure_12, figure_13, nrow = 2, ncol = 2)
-```
-
-For these blood parameters, the Healthy group shows generally higher distribution values compared to the Cirrhosis group. Looking at the specific median lines, lymphocytes show almost identical median values between healthy and cirrhosis groups, while monocytes and neutrophils demonstrate higher median values in the cirrhosis group compared to healthy individuals, suggesting increased innate immune cell activation in liver disease. In contrast, platelets show a notably higher median in the healthy group compared to cirrhosis, with the most pronounced difference among all parameters, likely reflecting the impact of portal hypertension and possible splenic sequestration in cirrhosis. Despite the similar lymphocyte medians, the overall distribution reveals generally higher lymphocyte values in healthy individuals, indicating better preserved adaptive immunity. Distribution overlaps exist between groups across all parameters, though the platelet parameter shows the clearest separation between healthy and cirrhosis populations.
+For these blood parameters, the density plots demonstrate distinctive patterns between Healthy and Cirrhosis groups. The lymphocyte distribution shows similar peak heights, while monocytes display multiple sharp peaks indicating distinct value clusters in both groups. Neutrophil distributions show broader patterns with different peak positions between groups, suggesting shifted but overlapping value ranges. The platelet distribution shows the most striking difference, with a notably higher and more concentrated peak in the healthy group compared to a lower, more dispersed distribution in cirrhosis, indicating more consistent platelet counts in health versus more variable counts in disease. Looking at the specific median lines, lymphocytes show almost identical values between healthy and cirrhosis groups, while monocytes and neutrophils demonstrate higher median values in the cirrhosis group compared to healthy individuals. In contrast, platelets show a notably higher median in the healthy group compared to cirrhosis, with the most pronounced difference among all parameters, likely reflecting the impact of portal hypertension in cirrhosis. Distribution overlaps exist between groups across all parameters, though the platelet parameter shows the clearest separation between healthy and cirrhosis populations.

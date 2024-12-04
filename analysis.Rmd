@@ -91,50 +91,50 @@ h(t) = h_0(t) \exp\Big( & \beta_{\text{expo}} \times x_{expo} + \beta_{\text{age
 \end{aligned}
 $$
 
-After fitting the Cox proportional hazards models, hazard ratios (HRs) will be calculated for each exposure category, with the lowest exposure category serving as the reference. Statistical significance will be assessed using p-values, and dose-response relationships will be evaluated through p-for-trend tests. Results will be reported with 95% confidence intervals (CIs) to convey precision. Survival durations will be computed based on either censored times or event times, with imputation applied where necessary to ensure complete datasets for analysis.
+After fitting the Cox proportional hazards models, hazard ratios will be calculated for each exposure category, with the lowest exposure category serving as the reference. Statistical significance will be assessed using p-values, and dose-response relationships will be evaluated through p-for-trend tests. Results will be reported with 95% confidence intervals to convey precision. Survival durations will be computed based on either censored times or event times, with imputation applied where necessary to ensure complete datasets for analysis.
 
 <br> 
 
-## Cumulative Hazard Plots
-#### Cumulative Hazard Plot for expo_lmr Categories in NAFLD Outcome
+### Cumulative Hazard Plots
+#### Figure 1: Cumulative Hazard Plot for expo_lmr Categories in NAFLD Outcome
 <img src="./png/cumhaz_expo_lmr_cat_nafld.png" style="width:180%;">
 
-The cumulative hazard plot shows the association between lymphocyte-to-monocyte ratio (LMR) exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD) over time. The three exposure categories (level 1, level 2, and level 3) display distinct cumulative hazard trends, with the high exposure group (level 3, yellow line) showing the steepest increase, indicating the highest risk of NAFLD. The low exposure group (level 1, green line) has the slowest cumulative hazard growth, suggesting the lowest risk, while the intermediate group (level 2, blue line) lies between the two. The separation of curves is statistically significant (p < 0.0001), demonstrating a strong dose-response relationship, where higher LMR exposure corresponds to greater NAFLD risk. These findings highlight the role of inflammation, as reflected by LMR, in driving the development of NAFLD.
+Figure 1 demonstrates the association between lymphocyte-to-monocyte ratio (LMR) exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD). The high exposure group (expo_lmr_cat=3, green line) exhibits the highest cumulative hazard throughout the follow-up period, followed by the intermediate (expo_lmr_cat=2, blue line) and low exposure (expo_lmr_cat=1, yellow line) groups. These differences are statistically significant (p < 0.0001), indicating that higher LMR levels are associated with an increased risk of NAFLD. This suggests that elevated LMR, potentially indicative of an immune imbalance, may contribute to the progression of NAFLD.
 
 <br>
 
-#### Cumulative Hazard Plot for expo_lmr Categories in Cirrhosis Outcome
+#### Figure 2: Cumulative Hazard Plot for expo_lmr Categories in Cirrhosis Outcome
 <img src="./png/cumhaz_expo_lmr_cat_cirrho.png" style="width:180%;">
 
-The cumulative hazard plot depicts the relationship between lymphocyte-to-monocyte ratio (LMR) exposure categories and the risk of developing cirrhosis over time. The three exposure categories (level 1, level 2, and level 3) show minimal separation in cumulative hazard curves throughout most of the follow-up period, with a slight divergence occurring after approximately 5,000 days. The high exposure group (level 3, yellow line) exhibits a marginally higher cumulative hazard compared to the intermediate (level 2, blue line) and low exposure groups (level 1, green line). However, the overall difference among the exposure groups is not statistically significant (p = 0.059), suggesting limited evidence to support an association between LMR exposure categories and cirrhosis risk within the observed follow-up period.
+Expanding on the findings for NAFLD, Figure 2 evaluates the relationship between LMR exposure categories and the risk of developing cirrhosis. The high exposure group (expo_lmr_cat=3, green line) again demonstrates the highest cumulative hazard, followed by the intermediate (expo_lmr_cat=2, blue line) and low exposure (expo_lmr_cat=1, yellow line) groups. Although the separation of the curves becomes more evident after approximately 5,000 days, the differences are not statistically significant (p = 0.059). These findings suggest that higher LMR levels may also be associated with an increased risk of cirrhosis, though the evidence is weaker compared to NAFLD.
 
 <br>
 
-#### Cumulative Hazard Plot for SII Exposure in NAFLD Outcome
+#### Figure 3: Cumulative Hazard Plot for SII Exposure in NAFLD Outcome
 <img src="./png/cumhaz_expo_sii_cat_nafld.png" style="width:180%;">
 
-The cumulative hazard plot illustrates the relationship between systemic immune-inflammation index (SII) exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD) over time. The three exposure categories (level 1, level 2, and level 3) display distinct trends, with the high exposure group (level 3, yellow line) showing the steepest cumulative hazard increase, indicating the highest risk of NAFLD. The low exposure group (level 1, green line) exhibits the slowest cumulative hazard growth, reflecting the lowest risk, while the intermediate group (level 2, blue line) lies between the two. The differences in cumulative hazard among the groups are statistically significant (p < 0.0001), highlighting a clear dose-response relationship. These findings underscore the importance of systemic inflammation, as captured by SII, as a significant risk factor for NAFLD development.
+Building on the role of inflammatory markers, Figure 3 illustrates the relationship between systemic immune-inflammation index (SII) exposure categories and the risk of developing NAFLD. The low exposure group (expo_sii_cat=1, yellow line) exhibits the highest cumulative hazard, followed by the intermediate group (expo_sii_cat=2, blue line), while the high exposure group (expo_sii_cat=3, green line) shows the lowest cumulative hazard. These differences are statistically significant (p < 0.0001), indicating that higher SII levels are associated with a reduced risk of NAFLD. This finding highlights the complex role of systemic inflammation, where individuals with lower SII levels may have an elevated risk of NAFLD.
 
 <br>
 
-#### Cumulative Hazard Plot for SII Exposure in Cirrhosis Outcome
+#### Figure 4: Cumulative Hazard Plot for SII Exposure in Cirrhosis Outcome
 <img src="./png/cumhaz_expo_sii_cat_cirrho.png" style="width:180%;">
 
-The cumulative hazard plot shows the relationship between systemic immune-inflammation index (SII) exposure categories and the risk of developing cirrhosis over time. The three exposure categories (level 1, level 2, and level 3) exhibit increasing cumulative hazard trends, with the high exposure group (level 3, yellow line) showing the steepest increase in cumulative hazard, indicating the highest risk of cirrhosis. The low exposure group (level 1, green line) has the slowest cumulative hazard growth, suggesting the lowest risk, while the intermediate group (level 2, blue line) falls between the two. The differences among the exposure groups are statistically significant (p < 0.0001), demonstrating a strong association between higher SII levels and increased risk of cirrhosis. These findings highlight systemic inflammation, as measured by SII, as an important risk factor for cirrhosis.
+Expanding the analysis to cirrhosis, Figure 4 examines the association between SII exposure categories and cirrhosis risk. Similar to the trend observed in NAFLD, the low exposure group (expo_sii_cat=1, yellow line) shows the highest cumulative hazard, followed by the intermediate group (expo_sii_cat=2, blue line), while the high exposure group (expo_sii_cat=3, green line) consistently demonstrates the lowest cumulative hazard. These differences are statistically significant (p < 0.0001), suggesting that higher SII levels are associated with a reduced risk of cirrhosis. This pattern indicates that systemic inflammation, as reflected by lower SII levels, may play a role in cirrhosis development.
 
 <br>
 
-#### Cumulative Hazard Plot for SII Exposure in NAFLD Outcome
+#### Figure 5: Cumulative Hazard Plot for NPAR Exposure in NAFLD Outcome
 <img src="./png/cumhaz_expo_npar_cat_nafld.png" style="width:180%;">
 
-The cumulative hazard plot illustrates the association between systemic immune-inflammation index (SII) exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD) over time. The three exposure categories (level 1, level 2, and level 3) show clear separation in cumulative hazard trends, with the high exposure group (level 3, yellow line) exhibiting the steepest increase in cumulative hazard, indicating the highest risk of NAFLD. The low exposure group (level 1, green line) demonstrates the slowest cumulative hazard growth, reflecting the lowest risk, while the intermediate group (level 2, blue line) lies between the two. The differences among the exposure groups are statistically significant (p < 0.0001), highlighting a strong relationship between higher SII levels and increased risk of NAFLD. These findings emphasize the critical role of systemic inflammation, as measured by SII, in influencing NAFLD development.
+Further exploring inflammatory markers, Figure 5 illustrates the relationship between Neutrophil-Percentage-to-Albumin Ratio (NPAR) exposure categories and NAFLD risk. The low exposure group (expo_npar_cat=1, yellow line) exhibits the highest cumulative hazard, followed by the intermediate group (expo_npar_cat=2, blue line), while the high exposure group (expo_npar_cat=3, green line) demonstrates the lowest cumulative hazard. These differences are statistically significant (p < 0.0001), indicating that higher NPAR levels are associated with a reduced risk of NAFLD. These findings emphasize the potential protective role of higher NPAR levels against NAFLD progression.
 
 <br>
 
-#### Cumulative Hazard Plot for NPAR Exposure in Cirrhosis Outcome
+#### Figure 6: Cumulative Hazard Plot for NPAR Exposure in Cirrhosis Outcome
 <img src="./png/cumhaz_expo_npar_cat_cirrho.png" style="width:180%;">
 
-The cumulative hazard plot shows the relationship between neutrophil-to-albumin ratio (NPAR) exposure categories and the risk of developing cirrhosis over time. The three exposure categories (level 1, level 2, and level 3) demonstrate increasing cumulative hazard trends, with the high exposure group (level 3, yellow line) exhibiting the steepest cumulative hazard increase, indicating the highest risk of cirrhosis. The low exposure group (level 1, green line) shows the slowest cumulative hazard growth, reflecting the lowest risk, while the intermediate group (level 2, blue line) lies between the two. The differences among the groups are statistically significant (p < 0.0001), suggesting a strong association between higher NPAR levels and an increased risk of cirrhosis. These findings highlight the potential role of elevated NPAR as a marker for cirrhosis risk.
+Finally, Figure 6 explores the relationship between NPAR exposure categories and the risk of cirrhosis. The low exposure group (expo_npar_cat=1, yellow line) shows the highest cumulative hazard, followed by the intermediate group (expo_npar_cat=2, blue line), while the high exposure group (expo_npar_cat=3, green line) consistently exhibits the lowest cumulative hazard. These differences are statistically significant (p < 0.0001), suggesting that higher NPAR levels are associated with a reduced risk of cirrhosis. This further supports the protective role of higher NPAR levels in mitigating cirrhosis risk, potentially through modulation of systemic inflammation.
 
 <br>
 
@@ -163,7 +163,7 @@ nafld_results_cleaned %>%
 ```
 
 
-This table presents the results of Cox proportional hazards models evaluating the association between various baseline exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD). Each exposure variable (`expo_lmr`, `expo_sii`, `expo_npar`, `expo_nps`) is divided into three categories, with Category 1 (not shown) serving as the reference group (HR = 1.00). The hazard ratios (HRs), confidence intervals (CIs), p-values, and p for trend values are provided for two models: Model 1, adjusted for age and sex, and Model 2, adjusted for additional covariates including socioeconomic and lifestyle factors.
+This table presents the results of Cox proportional hazards models evaluating the association between various baseline exposure categories and the risk of developing non-alcoholic fatty liver disease. Each exposure variable (`expo_lmr`, `expo_sii`, `expo_npar`, `expo_nps`) is divided into three categories, with Category 1 (not shown) serving as the reference group (HR = 1.00). The hazard ratios (HRs), confidence intervals (CIs), p-values, and p for trend values are provided for two models: Model 1, adjusted for age and sex, and Model 2, adjusted for additional covariates including socioeconomic and lifestyle factors.
 
 For `expo_lmr`, higher exposure categories (cat2 and cat3) consistently show increased HRs across both models, with slightly higher HRs in Model 2, indicating a stronger association with NAFLD risk after full adjustment. In contrast, for `expo_sii`, `expo_npar`, and `expo_nps`, higher categories exhibit HRs less than 1 in both models, reflecting their protective effects against NAFLD. Notably, the protective effect strengthens slightly in Model 2 for `expo_sii` and `expo_npar`, suggesting that adjusting for additional factors further clarifies their relationship with NAFLD risk. Significant p for trend values across most exposures reinforce robust dose-response relationships, highlighting the importance of these markers in predicting NAFLD.
 

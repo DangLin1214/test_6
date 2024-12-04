@@ -199,7 +199,6 @@ for (expo in expo_list) {
                xlab = "Follow up time(d)", 
                legend = c(0.2,0.8),
                legend.title = "Kaplan-Meier",
-               legend.labs = c("level = 3", "level = 2", "level = 1"),
                break.x.by = 1000,
                ylim = c(0, 2),
                palette = c("#E7B800", "#2E9FDF", "green4"),
@@ -216,4 +215,3 @@ for (expo in expo_list) {
     
   }
 }
-
