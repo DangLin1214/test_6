@@ -8,7 +8,7 @@ output:
 ---
 
 ### Motivation 
-Chronic diseases like non-alcoholic fatty liver disease (NAFLD), metabolic-associated fatty liver disease (MAFLD), and metabolic-associated steatohepatitis-related liver disease (MASLD) are becoming increasingly common and can progress to cirrhosis, liver failure, or hepatocellular carcinoma. These conditions are closely tied to systemic inflammation and immune dysregulation, making it essential to identify reliable, non-invasive biomarkers that can predict disease progression and provide insights into the underlying mechanisms. Such biomarkers could improve early detection, guide interventions, and support better clinical outcomes.
+Fatty liver disease (FLD) is one of the most prevalent chronic diseases and includes non-alcoholic fatty liver disease (NAFLD), metabolic-associated fatty liver disease (MAFLD), and metabolic-associated steatohepatitis-related liver disease (MASLD). Among these, NAFLD is the most common form, and its prevalence is rising rapidly. This condition can progress to severe complications, such as cirrhosis, liver failure, or hepatocellular carcinoma. Systemic inflammation and immune dysregulation are closely associated with FLD, underscoring the need to identify reliable, non-invasive biomarkers. Such biomarkers are critical for predicting disease progression, understanding underlying mechanisms, enabling early detection, guiding interventions, and ultimately improving clinical outcomes.
 
 Immune-related indices like the Lymphocyte-to-Monocyte Ratio (LMR), Systemic Immune-Inflammation Index (SII), Naples Prognostic Score (NPS), and Neutrophil-Percentage-to-Albumin Ratio (NPAR) have gained attention for their potential utility in assessing inflammation and immune responses. These indices are derived from routine blood tests, making them accessible and cost-effective. LMR, for instance, measures the balance between lymphocytes, which are linked to immune surveillance and anti-inflammatory responses, and monocytes, which are associated with inflammation and tissue damage. SII integrates neutrophil, platelet, and lymphocyte counts to provide a comprehensive view of immune activity and thrombosis risk. NPS combines multiple prognostic factors, including inflammatory markers, albumin levels, and platelet counts, offering a broader perspective on patient health. NPAR evaluates the relationship between neutrophil percentages and albumin levels, connecting immune function with nutritional status.
 
@@ -22,18 +22,10 @@ Our project draws inspiration from numerous epidemiological studies that have us
 <br>
 
 ### Initial Questions
-Our initial questions were designed to explore broad patterns and associations in the UKB dataset:
+Our initial questions were structured to explore potential connections between variables and their relationships to specific indices and chronic diseases:
 
-- How do age and sex influence the distribution of health outcomes?
-- Are there observable trends in disease incidence across different levels of alcohol consumption?
-- How do blood pressure categories relate to age and disease prevalence?
-- Is there a correlation between income levels and diet quality?
-- How does sleep duration vary across different age groups?
+- What are the initial associations between key variables such as age, sex, alcohol consumption, blood pressure, income, diet quality, and sleep duration?
 
-After conducting exploratory analyses and evaluating the dataset's strengths (e.g., large sample size) and limitations (e.g., underrepresentation of certain subgroups), we refined our questions to focus on specific trends and relationships: 
+- Are there significant relationships between participants’ characteristics (e.g., age, sex, lifestyle factors) and the indices we aim to study (e.g., systemic immune-inflammation index or metabolic markers)?
 
-- Does age distribution vary significantly between sexes in different age groups?
-- What is the relationship between alcohol consumption and disease incidence, stratified by sex?
-- How do blood pressure and age interact to influence disease incidence rates?
-- Is there a positive association between income levels and diet quality?
-- How do sleep duration patterns change with age?
+- Can these indices serve as predictors for specific chronic diseases, such as non-alcoholic fatty liver disease (NAFLD), and how do they interact with other variables in forecasting risk?
