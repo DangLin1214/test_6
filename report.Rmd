@@ -45,7 +45,7 @@ Our project draws inspiration from numerous epidemiological studies that have us
 <br>
 
 ## Initial Questions
-Our initial questions were structured to explore potential connections between variables and their relationships to specific indices and chronic diseases: <br>
+Our initial questions were structured to explore potential connections between variables and their relationships to specific indices and chronic diseases:
 
 - What are the initial associations between key variables such as age, sex, alcohol consumption, blood pressure, income, diet quality, and sleep duration?
 
