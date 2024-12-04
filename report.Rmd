@@ -20,6 +20,11 @@ library(gridExtra)
 library(kableExtra)
 ```
 
+## Scientific Title
+Exploring the Role of Inflammatory Biomarkers in Predicting the Risk of Non-Alcoholic Fatty Liver Disease or Cirrhosis Among Healthy Adults Using UK Biobank Data
+
+<br> 
+
 ## Group Members
 Zicheng Wang (zw3088), Xiaohui Kang (xk2163), Mengyuan Chen (mc5698), Shuai yuan (sy3270), Dang Lin (dl3757)
 
@@ -231,15 +236,379 @@ Sleep duration varied slightly by age. Younger participants (30-39) had the shor
 <br> 
 
 ### Exposure variables and disease outcomes
+```{r message = FALSE, warning = FALSE}
+quantiles <- ukb_data %>%
+  group_by(nafld_outcome) %>%
+  filter(!is.na(expo_lmr)) %>%
+  summarize(
+    q25 = quantile(expo_lmr, 0.25),
+    median = median(expo_lmr),
+    q75 = quantile(expo_lmr, 0.75))
 
+figure_6 <- ukb_data %>% 
+  group_by(nafld_outcome) %>% 
+  filter(!is.na(expo_lmr)) %>% 
+  mutate(
+    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
+    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
+  ) %>%
+  filter(expo_lmr >= lower_bound & expo_lmr <= upper_bound) %>% 
+  ggplot(aes(x = expo_lmr, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Lymphocyte-to-Monocyte Ratio (LMR)",
+    y = "Density",
+    title = "Density Plot of expo_lmr by NAFLD Outcome"
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+
+quantiles <- ukb_data %>%
+  group_by(nafld_outcome) %>%
+  filter(!is.na(expo_sii)) %>%
+  summarize(
+    q25 = quantile(expo_sii, 0.25),
+    median = median(expo_sii),
+    q75 = quantile(expo_sii, 0.75)
+  )
+
+figure_7 <-ukb_data %>% 
+  group_by(nafld_outcome) %>% 
+  filter(!is.na(expo_sii)) %>% 
+  mutate(
+    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
+    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
+  ) %>%
+  filter(expo_sii >= lower_bound & expo_sii <= upper_bound) %>% 
+  ggplot(aes(x = expo_sii, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Systemic Immune-Inflammation Index (SII)",
+    y = "Density",
+    title = "Density Plot of expo_sii by NAFLD Outcome"
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+quantiles <- ukb_data %>%
+  group_by(nafld_outcome) %>%
+  filter(!is.na(expo_npar)) %>%
+  summarize(
+    q25 = quantile(expo_npar, 0.25),
+    median = median(expo_npar),
+    q75 = quantile(expo_npar, 0.75)
+  )
+
+figure_8 <-ukb_data %>% 
+  group_by(nafld_outcome) %>% 
+  filter(!is.na(expo_npar)) %>% 
+  mutate(
+    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
+    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
+  ) %>%
+  filter(expo_npar >= lower_bound & expo_npar <= upper_bound) %>% 
+  ggplot(aes(x = expo_npar, fill = as.factor(nafld_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Neutrophil-to-Albumin Ratio (NPAR)",
+    y = "Density",
+    title = "Density Plot of expo_npar by NAFLD Outcome"
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) +  
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(nafld_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+
+figure_9 <-ukb_data %>% 
+  filter(!is.na(expo_nps)) %>% 
+  group_by(nafld_outcome, expo_nps) %>% 
+  summarize(count = n()) %>% 
+  ungroup() %>% 
+  mutate(total_count = sum(count), 
+         percentage = count / total_count * 100) %>%  
+  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(nafld_outcome))) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9), alpha = 0.8) +  
+  geom_text(aes(label = paste0(round(percentage, 1), "%")),  
+            position = position_dodge(width = 0.9), vjust = 0.75, size = 3) + 
+  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Naples Prognostic Score (NPS)",
+    y = "Percentage of Total Population",
+    title = "Percentage of Total Population by NPS and NAFLD Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) 
+
+grid.arrange(figure_6, figure_7, figure_8, figure_9, nrow = 2, ncol = 2)
+```
+
+For the continuous biomarkers (LMR, SII, and NPAR), the density plots show consistently lower concentrations of values in the NAFLD group compared to the Healthy group, indicating a complex immune-inflammatory profile in NAFLD pathogenesis. The lower density peaks in LMR reflect more dispersed immune balance patterns, while decreased density in SII suggests more variable inflammatory responses. Similarly, the broader distribution of NPAR in NAFLD may indicate more heterogeneous liver function and neutrophil activity patterns. The vertical lines in each density plot represent the quartiles (Q1=25th percentile, Q2=median, and Q3=75th percentile), providing a clear visualization of the data distribution. The close median values and significant distribution overlap suggest limited discriminative power for these biomarkers alone in distinguishing NAFLD from healthy individuals. The NPS distribution shows higher proportions of healthy individuals across all scores, particularly in lower-risk categories (0-1), highlighting that while NAFLD alters immune-inflammatory profiles, this does not necessarily translate into higher prognostic risks.
+
+<br>
+
+```{r message = FALSE, warning = FALSE}
+quantiles <- ukb_data %>%
+  group_by(cirrho_outcome) %>%
+  filter(!is.na(expo_lmr)) %>%
+  summarize(
+    q25 = quantile(expo_lmr, 0.25),
+    median = median(expo_lmr),
+    q75 = quantile(expo_lmr, 0.75))
+
+figure_10 <- ukb_data %>% 
+  group_by(cirrho_outcome) %>% 
+  filter(!is.na(expo_lmr)) %>% 
+  mutate(
+    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
+    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
+  ) %>%
+  filter(expo_lmr >= lower_bound & expo_lmr <= upper_bound) %>% 
+  ggplot(aes(x = expo_lmr, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Lymphocyte-to-Monocyte Ratio (LMR)",
+    y = "Density",
+    title = "Density Plot of expo_lmr by Cirrhosis Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+quantiles <- ukb_data %>%
+  group_by(cirrho_outcome) %>%
+  filter(!is.na(expo_sii)) %>%
+  summarize(
+    q25 = quantile(expo_sii, 0.25),
+    median = median(expo_sii),
+    q75 = quantile(expo_sii, 0.75)
+  )
+
+figure_11 <- ukb_data %>% 
+  group_by(cirrho_outcome) %>% 
+  filter(!is.na(expo_sii)) %>% 
+  mutate(
+    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
+    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
+  ) %>%
+  filter(expo_sii >= lower_bound & expo_sii <= upper_bound) %>% 
+  ggplot(aes(x = expo_sii, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Systemic Immune-Inflammation Index (SII)",
+    y = "Density",
+    title = "Density Plot of expo_sii by Cirrhosis Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+quantiles <- ukb_data %>%
+  group_by(cirrho_outcome) %>%
+  filter(!is.na(expo_npar)) %>%
+  summarize(
+    q25 = quantile(expo_npar, 0.25),
+    median = median(expo_npar),
+    q75 = quantile(expo_npar, 0.75)
+  )
+
+figure_12 <- ukb_data %>% 
+  group_by(cirrho_outcome) %>% 
+  filter(!is.na(expo_npar)) %>% 
+  mutate(
+    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
+    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
+  ) %>%
+  filter(expo_npar >= lower_bound & expo_npar <= upper_bound) %>% 
+  ggplot(aes(x = expo_npar, fill = as.factor(cirrho_outcome))) +
+  geom_density(alpha = 0.7) +
+  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Neutrophil-to-Albumin Ratio (NPAR)",
+    y = "Density",
+    title = "Density Plot of expo_npar by Cirrhosis Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  )  + 
+  geom_vline(data = quantiles, aes(xintercept = q25, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = median, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "solid", size = 1, show.legend = FALSE) +
+  geom_vline(data = quantiles, aes(xintercept = q75, 
+                                   color = as.factor(cirrho_outcome)), 
+             linetype = "dashed", size = 0.8, show.legend = FALSE) +
+  scale_color_manual(values = c("dodgerblue", "coral"))
+
+figure_13 <- ukb_data %>% 
+  filter(!is.na(expo_nps)) %>% 
+  group_by(cirrho_outcome, expo_nps) %>% 
+  summarize(count = n()) %>% 
+  ungroup() %>% 
+  mutate(total_count = sum(count), 
+         percentage = count / total_count * 100) %>%  
+  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(cirrho_outcome))) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9), alpha = 0.8) +  
+  geom_text(aes(label = paste0(round(percentage, 1), "%")),  
+            position = position_dodge(width = 0.9), vjust = 0.5, size = 3) + 
+  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
+                    labels = c("Healthy", "Disease")) +
+  labs(
+    x = "Naples Prognostic Score (NPS)",
+    y = "Percentage of Total Population",
+    title = "Percentage of Total Population by NPS and Cirrhosis Outcome"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",               
+    plot.title = element_text(size = 8),      
+    axis.title.x = element_text(size = 8),    
+    axis.title.y = element_text(size = 8),   
+    axis.text.x = element_text(size = 8),     
+    axis.text.y = element_text(size = 8), 
+    legend.title = element_text(size = 8),      
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(0.4, "cm")
+  ) 
+
+grid.arrange(figure_10, figure_11, figure_12, figure_13, nrow = 2, ncol = 2)
+```
+
+For the Cirrhosis group, the density plots reveal distinct distribution patterns compared to the Healthy group: LMR and SII show lower peak heights in cirrhosis, indicating more dispersed values and suggesting variable immune and inflammatory states, while NPAR shows shifted peak concentrations, reflecting altered liver function patterns. The height and shape of the density curves suggest more concentrated value distributions in healthy individuals for LMR and SII, indicating more consistent immune-inflammatory states in health. Though the overlapping areas between curves indicate some shared value ranges, the different peak heights and positions reflect distinct disease characteristics. The NPS distribution further emphasizes this contrast, with higher density concentrations in healthy individuals across risk categories.
+
+<br>
 
 ### Blood parameters and disease outcomes
-
-
-
-
-
-# 1
 ```{r message = FALSE, warning = FALSE}
 quantiles <- ukb_data %>%
   group_by(nafld_outcome) %>%
@@ -441,9 +810,10 @@ figure_17 <- ukb_data %>%
 grid.arrange(figure_14, figure_15, figure_16, figure_17, nrow = 2, ncol = 2)
 ```
 
+For these blood parameters (lymphocytes, monocytes, neutrophils, and platelets), the density plots reveal distinct distribution patterns. The monocyte plot shows multiple sharp peaks, indicating distinct clustered values in both groups. Lymphocyte and neutrophil distributions show bell-shaped curves with considerable overlap but different peak heights, suggesting concentrated value ranges in both healthy and NAFLD states. Platelet distributions show broader, more spread-out patterns with similar shapes between groups, indicating more variable platelet counts in both populations. These density patterns suggest that while the value ranges overlap, the concentration of measurements differs between healthy and NAFLD states, with each parameter showing unique distribution characteristics.
 
+<br>
 
-# 2
 ```{r message = FALSE, warning = FALSE}
 quantiles <- ukb_data %>%
   group_by(cirrho_outcome) %>%
@@ -645,380 +1015,9 @@ figure_21 <- ukb_data %>%
 grid.arrange(figure_18, figure_19, figure_20, figure_21, nrow = 2, ncol = 2)
 ```
 
+For these blood parameters, the density plots demonstrate distinctive patterns between Healthy and Cirrhosis groups. The lymphocyte distribution shows similar peak heights, while monocytes display multiple sharp peaks indicating distinct value clusters in both groups. Neutrophil distributions show broader patterns with different peak positions between groups, suggesting shifted but overlapping value ranges. The platelet distribution shows the most striking difference, with a notably higher and more concentrated peak in the healthy group compared to a lower, more dispersed distribution in cirrhosis, indicating more consistent platelet counts in health versus more variable counts in disease. Looking at the specific median lines, lymphocytes show almost identical values between healthy and cirrhosis groups, while monocytes and neutrophils demonstrate higher median values in the cirrhosis group compared to healthy individuals. In contrast, platelets show a notably higher median in the healthy group compared to cirrhosis, with the most pronounced difference among all parameters, likely reflecting the impact of portal hypertension in cirrhosis. Distribution overlaps exist between groups across all parameters, though the platelet parameter shows the clearest separation between healthy and cirrhosis populations.
 
-
-
-
-
-
-
-# useful plots
-```{r message = FALSE, warning = FALSE}
-quantiles <- ukb_data %>%
-  group_by(nafld_outcome) %>%
-  filter(!is.na(expo_lmr)) %>%
-  summarize(
-    q25 = quantile(expo_lmr, 0.25),
-    median = median(expo_lmr),
-    q75 = quantile(expo_lmr, 0.75))
-
-figure_6 <- ukb_data %>% 
-  group_by(nafld_outcome) %>% 
-  filter(!is.na(expo_lmr)) %>% 
-  mutate(
-    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
-    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
-  ) %>%
-  filter(expo_lmr >= lower_bound & expo_lmr <= upper_bound) %>% 
-  ggplot(aes(x = expo_lmr, fill = as.factor(nafld_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Lymphocyte-to-Monocyte Ratio (LMR)",
-    y = "Density",
-    title = "Density Plot of expo_lmr by NAFLD Outcome"
-  ) +
-  theme_minimal(base_size = 14) + 
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) +  
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-
-quantiles <- ukb_data %>%
-  group_by(nafld_outcome) %>%
-  filter(!is.na(expo_sii)) %>%
-  summarize(
-    q25 = quantile(expo_sii, 0.25),
-    median = median(expo_sii),
-    q75 = quantile(expo_sii, 0.75)
-  )
-
-figure_7 <-ukb_data %>% 
-  group_by(nafld_outcome) %>% 
-  filter(!is.na(expo_sii)) %>% 
-  mutate(
-    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
-    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
-  ) %>%
-  filter(expo_sii >= lower_bound & expo_sii <= upper_bound) %>% 
-  ggplot(aes(x = expo_sii, fill = as.factor(nafld_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Systemic Immune-Inflammation Index (SII)",
-    y = "Density",
-    title = "Density Plot of expo_sii by NAFLD Outcome"
-  ) +
-  theme_minimal(base_size = 14) + 
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) +  
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-quantiles <- ukb_data %>%
-  group_by(nafld_outcome) %>%
-  filter(!is.na(expo_npar)) %>%
-  summarize(
-    q25 = quantile(expo_npar, 0.25),
-    median = median(expo_npar),
-    q75 = quantile(expo_npar, 0.75)
-  )
-
-figure_8 <-ukb_data %>% 
-  group_by(nafld_outcome) %>% 
-  filter(!is.na(expo_npar)) %>% 
-  mutate(
-    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
-    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
-  ) %>%
-  filter(expo_npar >= lower_bound & expo_npar <= upper_bound) %>% 
-  ggplot(aes(x = expo_npar, fill = as.factor(nafld_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Neutrophil-to-Albumin Ratio (NPAR)",
-    y = "Density",
-    title = "Density Plot of expo_npar by NAFLD Outcome"
-  ) +
-  theme_minimal(base_size = 14) + 
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) +  
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(nafld_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-
-figure_9 <-ukb_data %>% 
-  filter(!is.na(expo_nps)) %>% 
-  group_by(nafld_outcome, expo_nps) %>% 
-  summarize(count = n()) %>% 
-  ungroup() %>% 
-  mutate(total_count = sum(count), 
-         percentage = count / total_count * 100) %>%  
-  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(nafld_outcome))) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.9), alpha = 0.8) +  
-  geom_text(aes(label = paste0(round(percentage, 1), "%")),  
-            position = position_dodge(width = 0.9), vjust = 0.75, size = 3) + 
-  scale_fill_manual(values = c("skyblue", "pink"), name = "NAFLD Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Naples Prognostic Score (NPS)",
-    y = "Percentage of Total Population",
-    title = "Percentage of Total Population by NPS and NAFLD Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) 
-
-grid.arrange(figure_6, figure_7, figure_8, figure_9, nrow = 2, ncol = 2)
-```
-
-
-
-```{r message = FALSE, warning = FALSE}
-quantiles <- ukb_data %>%
-  group_by(cirrho_outcome) %>%
-  filter(!is.na(expo_lmr)) %>%
-  summarize(
-    q25 = quantile(expo_lmr, 0.25),
-    median = median(expo_lmr),
-    q75 = quantile(expo_lmr, 0.75))
-
-figure_10 <- ukb_data %>% 
-  group_by(cirrho_outcome) %>% 
-  filter(!is.na(expo_lmr)) %>% 
-  mutate(
-    lower_bound = quantile(expo_lmr, 0.25) - 1.5 * IQR(expo_lmr),
-    upper_bound = quantile(expo_lmr, 0.75) + 1.5 * IQR(expo_lmr)
-  ) %>%
-  filter(expo_lmr >= lower_bound & expo_lmr <= upper_bound) %>% 
-  ggplot(aes(x = expo_lmr, fill = as.factor(cirrho_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Lymphocyte-to-Monocyte Ratio (LMR)",
-    y = "Density",
-    title = "Density Plot of expo_lmr by Cirrhosis Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  )  + 
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-quantiles <- ukb_data %>%
-  group_by(cirrho_outcome) %>%
-  filter(!is.na(expo_sii)) %>%
-  summarize(
-    q25 = quantile(expo_sii, 0.25),
-    median = median(expo_sii),
-    q75 = quantile(expo_sii, 0.75)
-  )
-
-figure_11 <- ukb_data %>% 
-  group_by(cirrho_outcome) %>% 
-  filter(!is.na(expo_sii)) %>% 
-  mutate(
-    lower_bound = quantile(expo_sii, 0.25) - 1.5 * IQR(expo_sii),
-    upper_bound = quantile(expo_sii, 0.75) + 1.5 * IQR(expo_sii)
-  ) %>%
-  filter(expo_sii >= lower_bound & expo_sii <= upper_bound) %>% 
-  ggplot(aes(x = expo_sii, fill = as.factor(cirrho_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Systemic Immune-Inflammation Index (SII)",
-    y = "Density",
-    title = "Density Plot of expo_sii by Cirrhosis Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  )  + 
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-quantiles <- ukb_data %>%
-  group_by(cirrho_outcome) %>%
-  filter(!is.na(expo_npar)) %>%
-  summarize(
-    q25 = quantile(expo_npar, 0.25),
-    median = median(expo_npar),
-    q75 = quantile(expo_npar, 0.75)
-  )
-
-figure_12 <- ukb_data %>% 
-  group_by(cirrho_outcome) %>% 
-  filter(!is.na(expo_npar)) %>% 
-  mutate(
-    lower_bound = quantile(expo_npar, 0.25) - 1.5 * IQR(expo_npar),
-    upper_bound = quantile(expo_npar, 0.75) + 1.5 * IQR(expo_npar)
-  ) %>%
-  filter(expo_npar >= lower_bound & expo_npar <= upper_bound) %>% 
-  ggplot(aes(x = expo_npar, fill = as.factor(cirrho_outcome))) +
-  geom_density(alpha = 0.7) +
-  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Neutrophil-to-Albumin Ratio (NPAR)",
-    y = "Density",
-    title = "Density Plot of expo_npar by Cirrhosis Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  )  + 
-  geom_vline(data = quantiles, aes(xintercept = q25, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = median, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "solid", size = 1, show.legend = FALSE) +
-  geom_vline(data = quantiles, aes(xintercept = q75, 
-                                   color = as.factor(cirrho_outcome)), 
-             linetype = "dashed", size = 0.8, show.legend = FALSE) +
-  scale_color_manual(values = c("dodgerblue", "coral"))
-
-figure_13 <- ukb_data %>% 
-  filter(!is.na(expo_nps)) %>% 
-  group_by(cirrho_outcome, expo_nps) %>% 
-  summarize(count = n()) %>% 
-  ungroup() %>% 
-  mutate(total_count = sum(count), 
-         percentage = count / total_count * 100) %>%  
-  ggplot(aes(x = as.factor(expo_nps), y = percentage, fill = as.factor(cirrho_outcome))) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.9), alpha = 0.8) +  
-  geom_text(aes(label = paste0(round(percentage, 1), "%")),  
-            position = position_dodge(width = 0.9), vjust = 0.5, size = 3) + 
-  scale_fill_manual(values = c("skyblue", "pink"), name = "Cirrhosis Outcome", 
-                    labels = c("Healthy", "Disease")) +
-  labs(
-    x = "Naples Prognostic Score (NPS)",
-    y = "Percentage of Total Population",
-    title = "Percentage of Total Population by NPS and Cirrhosis Outcome"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "bottom",               
-    plot.title = element_text(size = 8),      
-    axis.title.x = element_text(size = 8),    
-    axis.title.y = element_text(size = 8),   
-    axis.text.x = element_text(size = 8),     
-    axis.text.y = element_text(size = 8), 
-    legend.title = element_text(size = 8),      
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.4, "cm")
-  ) 
-
-grid.arrange(figure_10, figure_11, figure_12, figure_13, nrow = 2, ncol = 2)
-```
-
+<br>
 
 ## Survival Analysis
 [View Full Survival Analysis Steps on GitHub](https://github.com/DangLin1214/test4.github.io/blob/main/analysis.R)
@@ -1100,50 +1099,50 @@ h(t) = h_0(t) \exp\Big( & \beta_{\text{expo}} \times x_{expo} + \beta_{\text{age
 \end{aligned}
 $$
 
-After fitting the Cox proportional hazards models, hazard ratios (HRs) will be calculated for each exposure category, with the lowest exposure category serving as the reference. Statistical significance will be assessed using p-values, and dose-response relationships will be evaluated through p-for-trend tests. Results will be reported with 95% confidence intervals (CIs) to convey precision. Survival durations will be computed based on either censored times or event times, with imputation applied where necessary to ensure complete datasets for analysis.
+After fitting the Cox proportional hazards models, hazard ratios will be calculated for each exposure category, with the lowest exposure category serving as the reference. Statistical significance will be assessed using p-values, and dose-response relationships will be evaluated through p-for-trend tests. Results will be reported with 95% confidence intervals to convey precision. Survival durations will be computed based on either censored times or event times, with imputation applied where necessary to ensure complete datasets for analysis.
 
 <br> 
 
-## Cumulative Hazard Plots
-#### Cumulative Hazard Plot for expo_lmr Categories in NAFLD Outcome
+### Cumulative Hazard Plots
+#### Figure 1: Cumulative Hazard Plot for expo_lmr Categories in NAFLD Outcome
 <img src="./png/cumhaz_expo_lmr_cat_nafld.png" style="width:180%;">
 
-The cumulative hazard plot shows the association between lymphocyte-to-monocyte ratio (LMR) exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD) over time. The three exposure categories (level 1, level 2, and level 3) display distinct cumulative hazard trends, with the high exposure group (level 3, yellow line) showing the steepest increase, indicating the highest risk of NAFLD. The low exposure group (level 1, green line) has the slowest cumulative hazard growth, suggesting the lowest risk, while the intermediate group (level 2, blue line) lies between the two. The separation of curves is statistically significant (p < 0.0001), demonstrating a strong dose-response relationship, where higher LMR exposure corresponds to greater NAFLD risk. These findings highlight the role of inflammation, as reflected by LMR, in driving the development of NAFLD.
+Figure 1 demonstrates the association between lymphocyte-to-monocyte ratio (LMR) exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD). The high exposure group (expo_lmr_cat=3, green line) exhibits the highest cumulative hazard throughout the follow-up period, followed by the intermediate (expo_lmr_cat=2, blue line) and low exposure (expo_lmr_cat=1, yellow line) groups. These differences are statistically significant (p < 0.0001), indicating that higher LMR levels are associated with an increased risk of NAFLD. This suggests that elevated LMR, potentially indicative of an immune imbalance, may contribute to the progression of NAFLD.
 
 <br>
 
-#### Cumulative Hazard Plot for expo_lmr Categories in Cirrhosis Outcome
+#### Figure 2: Cumulative Hazard Plot for expo_lmr Categories in Cirrhosis Outcome
 <img src="./png/cumhaz_expo_lmr_cat_cirrho.png" style="width:180%;">
 
-The cumulative hazard plot depicts the relationship between lymphocyte-to-monocyte ratio (LMR) exposure categories and the risk of developing cirrhosis over time. The three exposure categories (level 1, level 2, and level 3) show minimal separation in cumulative hazard curves throughout most of the follow-up period, with a slight divergence occurring after approximately 5,000 days. The high exposure group (level 3, yellow line) exhibits a marginally higher cumulative hazard compared to the intermediate (level 2, blue line) and low exposure groups (level 1, green line). However, the overall difference among the exposure groups is not statistically significant (p = 0.059), suggesting limited evidence to support an association between LMR exposure categories and cirrhosis risk within the observed follow-up period.
+Expanding on the findings for NAFLD, Figure 2 evaluates the relationship between LMR exposure categories and the risk of developing cirrhosis. The high exposure group (expo_lmr_cat=3, green line) again demonstrates the highest cumulative hazard, followed by the intermediate (expo_lmr_cat=2, blue line) and low exposure (expo_lmr_cat=1, yellow line) groups. Although the separation of the curves becomes more evident after approximately 5,000 days, the differences are not statistically significant (p = 0.059). These findings suggest that higher LMR levels may also be associated with an increased risk of cirrhosis, though the evidence is weaker compared to NAFLD.
 
 <br>
 
-#### Cumulative Hazard Plot for SII Exposure in NAFLD Outcome
+#### Figure 3: Cumulative Hazard Plot for SII Exposure in NAFLD Outcome
 <img src="./png/cumhaz_expo_sii_cat_nafld.png" style="width:180%;">
 
-The cumulative hazard plot illustrates the relationship between systemic immune-inflammation index (SII) exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD) over time. The three exposure categories (level 1, level 2, and level 3) display distinct trends, with the high exposure group (level 3, yellow line) showing the steepest cumulative hazard increase, indicating the highest risk of NAFLD. The low exposure group (level 1, green line) exhibits the slowest cumulative hazard growth, reflecting the lowest risk, while the intermediate group (level 2, blue line) lies between the two. The differences in cumulative hazard among the groups are statistically significant (p < 0.0001), highlighting a clear dose-response relationship. These findings underscore the importance of systemic inflammation, as captured by SII, as a significant risk factor for NAFLD development.
+Building on the role of inflammatory markers, Figure 3 illustrates the relationship between systemic immune-inflammation index (SII) exposure categories and the risk of developing NAFLD. The low exposure group (expo_sii_cat=1, yellow line) exhibits the highest cumulative hazard, followed by the intermediate group (expo_sii_cat=2, blue line), while the high exposure group (expo_sii_cat=3, green line) shows the lowest cumulative hazard. These differences are statistically significant (p < 0.0001), indicating that higher SII levels are associated with a reduced risk of NAFLD. This finding highlights the complex role of systemic inflammation, where individuals with lower SII levels may have an elevated risk of NAFLD.
 
 <br>
 
-#### Cumulative Hazard Plot for SII Exposure in Cirrhosis Outcome
+#### Figure 4: Cumulative Hazard Plot for SII Exposure in Cirrhosis Outcome
 <img src="./png/cumhaz_expo_sii_cat_cirrho.png" style="width:180%;">
 
-The cumulative hazard plot shows the relationship between systemic immune-inflammation index (SII) exposure categories and the risk of developing cirrhosis over time. The three exposure categories (level 1, level 2, and level 3) exhibit increasing cumulative hazard trends, with the high exposure group (level 3, yellow line) showing the steepest increase in cumulative hazard, indicating the highest risk of cirrhosis. The low exposure group (level 1, green line) has the slowest cumulative hazard growth, suggesting the lowest risk, while the intermediate group (level 2, blue line) falls between the two. The differences among the exposure groups are statistically significant (p < 0.0001), demonstrating a strong association between higher SII levels and increased risk of cirrhosis. These findings highlight systemic inflammation, as measured by SII, as an important risk factor for cirrhosis.
+Expanding the analysis to cirrhosis, Figure 4 examines the association between SII exposure categories and cirrhosis risk. Similar to the trend observed in NAFLD, the low exposure group (expo_sii_cat=1, yellow line) shows the highest cumulative hazard, followed by the intermediate group (expo_sii_cat=2, blue line), while the high exposure group (expo_sii_cat=3, green line) consistently demonstrates the lowest cumulative hazard. These differences are statistically significant (p < 0.0001), suggesting that higher SII levels are associated with a reduced risk of cirrhosis. This pattern indicates that systemic inflammation, as reflected by lower SII levels, may play a role in cirrhosis development.
 
 <br>
 
-#### Cumulative Hazard Plot for SII Exposure in NAFLD Outcome
+#### Figure 5: Cumulative Hazard Plot for NPAR Exposure in NAFLD Outcome
 <img src="./png/cumhaz_expo_npar_cat_nafld.png" style="width:180%;">
 
-The cumulative hazard plot illustrates the association between systemic immune-inflammation index (SII) exposure categories and the risk of developing non-alcoholic fatty liver disease (NAFLD) over time. The three exposure categories (level 1, level 2, and level 3) show clear separation in cumulative hazard trends, with the high exposure group (level 3, yellow line) exhibiting the steepest increase in cumulative hazard, indicating the highest risk of NAFLD. The low exposure group (level 1, green line) demonstrates the slowest cumulative hazard growth, reflecting the lowest risk, while the intermediate group (level 2, blue line) lies between the two. The differences among the exposure groups are statistically significant (p < 0.0001), highlighting a strong relationship between higher SII levels and increased risk of NAFLD. These findings emphasize the critical role of systemic inflammation, as measured by SII, in influencing NAFLD development.
+Further exploring inflammatory markers, Figure 5 illustrates the relationship between Neutrophil-Percentage-to-Albumin Ratio (NPAR) exposure categories and NAFLD risk. The low exposure group (expo_npar_cat=1, yellow line) exhibits the highest cumulative hazard, followed by the intermediate group (expo_npar_cat=2, blue line), while the high exposure group (expo_npar_cat=3, green line) demonstrates the lowest cumulative hazard. These differences are statistically significant (p < 0.0001), indicating that higher NPAR levels are associated with a reduced risk of NAFLD. These findings emphasize the potential protective role of higher NPAR levels against NAFLD progression.
 
 <br>
 
-#### Cumulative Hazard Plot for NPAR Exposure in Cirrhosis Outcome
+#### Figure 6: Cumulative Hazard Plot for NPAR Exposure in Cirrhosis Outcome
 <img src="./png/cumhaz_expo_npar_cat_cirrho.png" style="width:180%;">
 
-The cumulative hazard plot shows the relationship between neutrophil-to-albumin ratio (NPAR) exposure categories and the risk of developing cirrhosis over time. The three exposure categories (level 1, level 2, and level 3) demonstrate increasing cumulative hazard trends, with the high exposure group (level 3, yellow line) exhibiting the steepest cumulative hazard increase, indicating the highest risk of cirrhosis. The low exposure group (level 1, green line) shows the slowest cumulative hazard growth, reflecting the lowest risk, while the intermediate group (level 2, blue line) lies between the two. The differences among the groups are statistically significant (p < 0.0001), suggesting a strong association between higher NPAR levels and an increased risk of cirrhosis. These findings highlight the potential role of elevated NPAR as a marker for cirrhosis risk.
+Finally, Figure 6 explores the relationship between NPAR exposure categories and the risk of cirrhosis. The low exposure group (expo_npar_cat=1, yellow line) shows the highest cumulative hazard, followed by the intermediate group (expo_npar_cat=2, blue line), while the high exposure group (expo_npar_cat=3, green line) consistently exhibits the lowest cumulative hazard. These differences are statistically significant (p < 0.0001), suggesting that higher NPAR levels are associated with a reduced risk of cirrhosis. This further supports the protective role of higher NPAR levels in mitigating cirrhosis risk, potentially through modulation of systemic inflammation.
 
 <br>
 
@@ -1171,9 +1170,10 @@ nafld_results_cleaned %>%
   kable_styling(full_width = FALSE, position = "center")
 ```
 
-The analysis of the non-alcoholic fatty liver disease (NAFLD) results revealed significant associations between baseline inflammatory marker categories (e.g., expo_sii, expo_nps) and NAFLD risk. In Model 1, which adjusted for age and sex only, higher exposure categories (Category 2 and Category 3) showed elevated hazard ratios (HRs) compared to Category 1 (reference group, HR = 1). This indicates a progressive increase in NAFLD risk with higher inflammatory marker levels. For instance, participants in Category 3 for expo_sii demonstrated an HR exceeding 1.5, signifying a 50% greater risk relative to the reference.
 
-Model 2, incorporating additional adjustments for socioeconomic (income, Townsend score) and lifestyle factors (diet quality, smoking status, alcohol consumption, etc.), revealed similarly elevated HRs for higher categories. The consistency between the two models suggests robust associations, underscored by statistically significant p for trend values (<0.0001). This highlights a dose-response relationship, where increasing inflammatory marker levels strongly correlate with heightened NAFLD risk. The lower boundary of HRs in Category 1 and narrower confidence intervals (CIs) underscore the protective role of minimal exposure levels.
+This table presents the results of Cox proportional hazards models evaluating the association between various baseline exposure categories and the risk of developing non-alcoholic fatty liver disease. Each exposure variable (`expo_lmr`, `expo_sii`, `expo_npar`, `expo_nps`) is divided into three categories, with Category 1 (not shown) serving as the reference group (HR = 1.00). The hazard ratios (HRs), confidence intervals (CIs), p-values, and p for trend values are provided for two models: Model 1, adjusted for age and sex, and Model 2, adjusted for additional covariates including socioeconomic and lifestyle factors.
+
+For `expo_lmr`, higher exposure categories (cat2 and cat3) consistently show increased HRs across both models, with slightly higher HRs in Model 2, indicating a stronger association with NAFLD risk after full adjustment. In contrast, for `expo_sii`, `expo_npar`, and `expo_nps`, higher categories exhibit HRs less than 1 in both models, reflecting their protective effects against NAFLD. Notably, the protective effect strengthens slightly in Model 2 for `expo_sii` and `expo_npar`, suggesting that adjusting for additional factors further clarifies their relationship with NAFLD risk. Significant p for trend values across most exposures reinforce robust dose-response relationships, highlighting the importance of these markers in predicting NAFLD.
 
 <br>
 
@@ -1201,27 +1201,36 @@ cirrhosis_results_cleaned %>%
   kable_styling(full_width = FALSE, position = "center")
 ```
 
-The cirrhosis analysis revealed a similar pattern of associations between baseline exposure categories and time-to-event outcomes. In Model 1, higher categories of inflammatory markers (expo_sii, expo_nps) showed significant HRs above 1, indicating increased cirrhosis risk compared to Category 1. For example, participants in Category 3 of expo_nps displayed an HR close to 2.0, suggesting a twofold increase in risk.
-
-When adjusted further in Model 2, incorporating a comprehensive set of confounders, these associations remained significant, reinforcing the importance of inflammatory markers in predicting cirrhosis outcomes. The dose-response trends are evidenced by the highly significant p for trend values (all <0.001). The results also indicate that the inclusion of socioeconomic and behavioral factors slightly attenuated the HRs but did not alter their overall significance, highlighting the independent contribution of inflammatory markers to cirrhosis risk.
+Similarly, this table presents the results of Cox proportional hazards models evaluating the association between various baseline exposure categories and the risk of developing cirrhosis. For `expo_lmr`, higher categories (cat2 and cat3) show HRs slightly below 1 in Model 1, indicating a modest protective effect against cirrhosis, but this effect weakens in Model 2, with HRs approaching 1 and becoming non-significant in some comparisons. In contrast, `expo_sii` demonstrates a strong protective association in both models, with substantially reduced HRs for cat2 and cat3, and slightly stronger effects observed in Model 2 after full adjustment. Similarly, `expo_npar` and `expo_nps` consistently show HRs below 1 in both models, with Model 2 indicating slightly enhanced protective effects compared to Model 1. The significant p for trend values, particularly for `expo_sii` and `expo_nps`, highlight robust dose-response relationships, emphasizing the importance of these markers in mitigating cirrhosis risk.
 
 <br> 
 
-## Discussion
-
-Our analysis offers valuable insights into the demographic, lifestyle, and health factors influencing disease outcomes. Age and sex distributions showed consistent trends, with older age groups displaying greater variability in health outcomes, reflecting longevity and disparities in access to healthcare. The inverse association between alcohol consumption and disease incidence among non-drinkers suggests potential confounding by underlying health conditions, such as abstinence due to pre-existing illnesses, emphasizing the need to consider these factors in behavioral assessments.
-
-Blood pressure emerged as a critical predictor of disease risk, highlighting the importance of hypertension management, particularly in older adults. Socioeconomic disparities were evident, with a positive correlation between income and diet quality reflecting broader inequities in health behaviors and access to nutritious food. Sleep duration patterns varied across age groups, with shorter durations among younger participants and greater variability in older adults, potentially linked to lifestyle factors and age-related changes in circadian rhythms. These findings underscore the complex interplay of demographic and behavioral factors influencing health.
-
-The survival analysis further illuminated the associations between baseline exposure categories (sii_cat, nps_cat, npar_cat, and lmr_cat) and health outcomes. Kaplan-Meier survival curves revealed distinct trends, with participants in low exposure categories demonstrating the highest survival probabilities throughout the follow-up, suggesting a protective effect against adverse health outcomes. In contrast, those in high exposure categories exhibited the steepest declines in survival, with clear separations from other groups, indicating a significant association between increased exposure levels and elevated risk. These findings were supported by statistical tests (p-values < 0.001), affirming the robustness of the observed dose-response relationships.
-
-Intermediate exposure groups showed moderate survival declines, reflecting incremental increases in risk. Survival curves for these groups revealed a steady deterioration compared to low exposure groups, albeit less severe than those in high exposure categories. These results highlight the continuum of risk associated with varying exposure levels and the critical need for targeted interventions to mitigate exposure and improve health outcomes.
-
-Demographic and behavioral variables, including age, income, diet quality, and smoking status, played pivotal roles in shaping survival trends. Older participants and individuals with lower incomes were overrepresented in higher exposure categories, exacerbating their vulnerability to adverse outcomes. Similarly, poor dietary habits and higher smoking prevalence in intermediate and high exposure groups compounded survival disparities. These findings collectively emphasize the importance of addressing both exposure levels and underlying socioeconomic and behavioral determinants to enhance population health and reduce disparities in outcomes.
-
-
 ## Conclusion
-This analysis integrates insights from EDA and survival modeling to highlight the multifaceted drivers of health outcomes. Demographic, socioeconomic, and behavioral factors interact with baseline exposures to shape survival probabilities. Addressing high-risk exposures, coupled with efforts to reduce socioeconomic inequities, is essential for improving health outcomes. These findings provide a foundation for future research to refine intervention strategies and inform public health policies targeting vulnerable populations.
+### Discussion
+Our study explored the association of lymphocyte-to-monocyte ratio, systemic immune-inflammation index, neutrophil-percentage-to-albumin ratio, and neutrophil-to-platelet score, as the four key inflammatory markers, with the risk for both non-alcoholic fatty liver disease and cirrhosis. With the inclusion of survival analysis, trend of cumulative hazard, and baseline characteristics in this work, our results can be considered a new comprehension regarding the interaction between systemic inflammation and the progression of liver diseases.
+
+For LMR, higher exposure categories (expo_lmr_cat=3) were associated with consistently increased risks of both NAFLD and cirrhosis. The cumulative hazard plots showed a clear dose-response relationship, with higher LMR levels associated with increased cumulative hazard for both outcomes. It suggests that the usual interpretation of LMR as a marker may indicate not reduced inflammation but the dysregulation of adaptive immunity or the prolonged activation of immune competent cells involved in hepatic inflammation and fibrotic processes. Baseline data also showed that the category of intermediate exposure was represented by more of the population, thus suggesting demographic or clinically modifiable variables that may affect the distribution of LMR and modify its association with liver disease risk.
+
+In contrast, SII and NPAR had a protective association with both NAFLD and cirrhosis. In general, higher categories of exposure- namely expo_sii_cat = 3 and expo_npar_cat = 3-were associated with lower cumulative hazard and hazard ratios below 1 across the Cox proportional hazards models, even after adjusting for covariates. These results suggest that higher levels of SII and NPAR reflect compensatory immune mechanisms that attenuate liver injury and are opposite of their established roles as markers of systemic inflammation in other disease contexts.
+
+Indeed, the distribution of baseline characteristics was relatively even across both SII and NPAR categories, reinforcing the stability of these associations and indicating that low levels of these markers reflect a state of increased vulnerability to metabolic stress and immune dysfunction.
+
+In the case of NPS, a similar pattern for protection was observed for cirrhosis, where the higher categories of exposure showed reduced cumulative hazard. However, the baseline data indicated a large population imbalance, where there was an unusually high number of individuals in the low category of exposure (expo_nps_cat=1). This may be one partial explanation for the strength of the association found and points to one of the many reasons accounting for population heterogeneity in survival analyses is important.
+
+In summary, these findings reveal the multifactorial, context-dependent function of systemic inflammation in liver disease. On one hand, inflammation has been an identified driver for NAFLD and cirrhosis; however, the protective associations that SII and NPAR point out clearly indicate the complex nonlinear relationships or threshold effects which stand in the way of any simple-minded interpretation of these markers. Furthermore, the dose-response relationship of significant p-value for trend, observed across all markers, adds to the probability of their predictive utility for the stratification of risk against liver diseases. The integration of the baseline characteristics provides a further clear suggestion as to how demographic and clinical factors can influence such associations. In fact, age, sex, socioeconomic status, and modifiable lifestyle factors might interactively relate with systemic inflammation at the determination of an individual's risk profile. Mechanistic studies should be conducted in the future to unravel the dual role of inflammatory markers in promoting and mitigating liver disease, exploring how these markers can be integrated into personalized predictive models for improving early detection and targeted interventions in NAFLD and cirrhosis.
+
+<br> 
+
+### Limitations
+Although our study illuminates the role of inflammatory markers in predicting the risks of NAFLD and cirrhosis, there are some limitations that warrant mention. The first one would be that this is an observational study in which no causal inferences could be drawn. Moreover, detected associations of LMR, SII, NPAR, and NPS with liver disease outcomes may have been subjected to residual confounding. Although the multivariate models were adjusted for age, sex, socioeconomic status, and lifestyle factors, the influence of unmeasured factors, including genetic predisposition, dietary patterns, and comorbid conditions, may not be entirely eliminated.
+
+Second, the biased distribution of participants in some categories of exposure, especially for NPS, may have biased the results. The excessively large population in the low exposure category of expo_nps_cat = 1 may have inflated the protective association observed for higher categories of exposure. Likewise, subtle differences in baseline characteristics may have influenced the risk estimates across groups, despite the adjustment.
+
+Third, the study was based on single baseline measurements of inflammatory markers, which may not fully reflect the dynamic changes in systemic inflammation. Chronic states of inflammation, fluctuating levels of immune markers, or interventions during follow-up could alter the associations found and therefore misclassify the levels of exposure.
+
+Last but not least, the findings hint at important biologies being involved in the role of inflammatory pathways in liver disease; no such mechanistic data is available to support the interpretation for truly causative pathways. Experimental and longitudinal studies are required that can replicate findings and further dissect whether the protective associations observed were due to a true compensatory immune path or mediated by something.
+
+Given the limited nature of these, it increases the reliability of observed associations where consistency in results arises both from cumulative hazard plots and Cox proportional hazards models. Thus, these markers hold the potential for utility in the stratification of liver disease risk. Research in the future would also be needed to account for these limitations by way of the incorporation of repeated measures of inflammatory markers, exploration of confounding factors, and utilization of mechanistic studies in ways that would enhance this knowledge about the relationships.
 
 <br> 
 
@@ -1316,5 +1325,3 @@ knitr::kable(
 ```
 
 The baseline characteristics tables present a comprehensive summary of the study population stratified by four key exposure categories: Lymphocyte-to-Monocyte Ratio (LMR), Systemic Immune-Inflammation Index (SII), Neutrophil-to-Albumin Ratio (NPAR), and Naples Prognostic Score (NPS). These tables outline demographic variables (e.g., age, sex), socioeconomic factors (e.g., income, Townsend index), lifestyle behaviors (e.g., smoking, alcohol intake), and clinical markers (e.g., triglycerides, diet quality), while highlighting statistically significant differences across exposure levels for most variables. These differences underscore the potential influence of these covariates on the outcomes, necessitating their adjustment in subsequent analyses, such as Cox proportional hazards modeling, to mitigate confounding and ensure robust evaluation of exposure-outcome relationships.
-
-
